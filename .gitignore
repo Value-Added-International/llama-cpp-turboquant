@@ -160,3 +160,8 @@ a.out.*
 
 AGENTS.local.md
 .pi/SYSTEM.md
+CLAUDE.md
+
+# deb packaging artifacts
+llama-cpp-turboquant-hip-gfx1103_*/
+*.deb
