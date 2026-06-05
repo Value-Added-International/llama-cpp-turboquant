@@ -86,6 +86,7 @@ cmake -B build \
   -DGPU_TARGETS=gfx1103 \           # adjust: gfx1100, gfx942 (MI300X), gfx950 (MI355X), gfx940/941 (MI250X)
   -DGGML_HIP_ROCWMMA_FATTN=ON \     # rocWMMA-accelerated flash attention (ROCM 7.13+, RDNA3/CDNA3+)
   -DGGML_CUDA_FA_ALL_QUANTS=ON \    # enable flash attention for all quantized KV types (turbo3, turbo4, q8_0)
+  -DGGML_HIP_GRAPHS=OFF \           # required for gfx1103: rocWMMA FA ops cannot be recorded in a HIP graph stream
   -DCMAKE_C_COMPILER=amdclang \     # ROCM bundled clang (NOT system clang)
   -DCMAKE_CXX_COMPILER=amdclang++ \ # ROCM bundled clang++
   -DCMAKE_BUILD_TYPE=Release
@@ -101,6 +102,7 @@ cmake -B build \
   -DGGML_HIP=ON \
   -DGPU_TARGETS=gfx1103 \
   -DGGML_HIP_ROCWMMA_FATTN=ON \
+  -DGGML_HIP_GRAPHS=OFF \           # required for gfx1103: rocWMMA FA ops cannot be recorded in a HIP graph stream
   -DCMAKE_C_COMPILER=clang \        # AOCC clang (CPU-side); set PATH to AOCC bin first
   -DCMAKE_CXX_COMPILER=clang++ \    # AOCC clang++ (CPU-side)
   -DGGML_NATIVE=ON \                # Zen4c native instructions (AVX512, VNNI)

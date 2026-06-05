@@ -1,12 +1,7 @@
 #!/usr/bin/env bash
 # smoke-test.sh — staged HIP/turbo KV cache validation for gfx1103
 #
-# Known issue: this build was compiled with GGML_HIP_GRAPHS enabled (default).
-# HIP graph capture is incompatible with the FA kernel on gfx1103 — it aborts
-# on the 2nd inference request (or during warmup). Workaround: --no-warmup delays
-# the crash past startup. Permanent fix: rebuild with -DGGML_HIP_GRAPHS=OFF.
-#
-# Run phases:  1 = baseline (f16/f16, no turbo — proves HIP loads correctly)
+# Run phases:  1 = baseline (f16/f16, no turbo — proves HIP backend loads)
 #              2 = step-1 ladder (f16 K + turbo4 V — lightest turbo, FA required)
 #              3 = recommended default (q8_0 K + turbo3 V — production target)
 # Usage: ./smoke-test.sh [1|2|3]   (default: 1)
@@ -71,8 +66,7 @@ case "$PHASE" in
     echo "PASS: HIP baseline OK"
     ;;
 2)
-    echo "=== phase 2: step-1 ladder — f16 K + turbo4 V (lightest turbo; FA auto-enabled) ==="
-    echo "NOTE: if this aborts on the 2nd request, rebuild with -DGGML_HIP_GRAPHS=OFF"
+    echo "=== phase 2: step-1 ladder — f16 K + turbo4 V (lightest turbo; FA required) ==="
     start_server --cache-type-k f16 --cache-type-v turbo4 --flash-attn on
     wait_ready
     check_inference
@@ -80,7 +74,6 @@ case "$PHASE" in
     ;;
 3)
     echo "=== phase 3: recommended default — q8_0 K + turbo3 V ==="
-    echo "NOTE: if this aborts on the 2nd request, rebuild with -DGGML_HIP_GRAPHS=OFF"
     start_server --cache-type-k q8_0 --cache-type-v turbo3 --flash-attn on
     wait_ready
     check_inference

@@ -29,3 +29,8 @@ list(APPEND CMAKE_PREFIX_PATH "${_rocm}")
 # HIP language enable (enable_language(HIP) in ggml-hip) reads these env vars
 set(ENV{HIP_PATH} "${_rocm}")
 set(ENV{HIPCXX}   "${_rocm}/llvm/bin/clang")
+
+# HIP graph capture is incompatible with the rocWMMA FA kernel on gfx1103 —
+# the FA dispatch uses ops that cannot be recorded inside a HIP graph stream,
+# causing a hard abort on the first captured inference pass.
+set(GGML_HIP_GRAPHS OFF CACHE BOOL "HIP graph capture disabled for gfx1103 (rocWMMA FA incompatibility)" FORCE)
