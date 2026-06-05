@@ -67,6 +67,34 @@
     { "name": "x64-linux-gcc-reldbg", "inherits": [ "base", "x64-linux-gcc", "reldbg" ] },
     { "name": "x64-linux-gcc+static-release", "inherits": [ "base", "x64-linux-gcc", "release", "static" ] },
 
+    {
+        "name": "hip-rocm713-gfx1103",
+        "hidden": true,
+        "cacheVariables": {
+            "CMAKE_TOOLCHAIN_FILE":    "${sourceDir}/cmake/x64-linux-hip-rocm713-aocc.cmake",
+            "GGML_HIP":                "ON",
+            "GPU_TARGETS":             "gfx1103",
+            "GGML_HIP_ROCWMMA_FATTN":  "ON",
+            "GGML_CUDA_FA_ALL_QUANTS": "ON",
+            "GGML_NATIVE":             "ON",
+            "GGML_HIP_GRAPHS":         "OFF",
+            "CMAKE_HIP_FLAGS":         "-I/opt/rocm/include"
+        }
+    },
+    {
+        "name": "vulkan-aocc",
+        "hidden": true,
+        "cacheVariables": {
+            "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/cmake/x64-linux-vulkan-aocc.cmake",
+            "GGML_VULKAN":          "ON",
+            "GGML_NATIVE":          "ON"
+        }
+    },
+    { "name": "x64-linux-hip-rocm713-gfx1103-release", "inherits": [ "base", "hip-rocm713-gfx1103", "release" ] },
+    { "name": "x64-linux-hip-rocm713-gfx1103-debug",   "inherits": [ "base", "hip-rocm713-gfx1103", "debug"   ] },
+    { "name": "x64-linux-vulkan-aocc-release",          "inherits": [ "base", "vulkan-aocc",          "release" ] },
+    { "name": "x64-linux-vulkan-aocc-debug",            "inherits": [ "base", "vulkan-aocc",          "debug"   ] },
+
     { "name": "arm64-windows-llvm-debug", "inherits": [ "base", "arm64-windows-llvm", "debug" ] },
     { "name": "arm64-windows-llvm-release", "inherits": [ "base", "arm64-windows-llvm", "reldbg" ] },
     { "name": "arm64-windows-llvm+static-release", "inherits": [ "base", "arm64-windows-llvm", "reldbg", "static" ] },
