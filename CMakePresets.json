@@ -110,6 +110,23 @@
     { "name": "x64-linux-vulkan-AMD-780-release", "inherits": [ "base", "vulkan-amd780", "release" ] },
     { "name": "x64-linux-vulkan-AMD-780-debug",   "inherits": [ "base", "vulkan-amd780", "debug"   ] },
 
+    {
+        "name": "cuda-nvidia-rtx4060",
+        "hidden": true,
+        "cacheVariables": {
+            "CMAKE_TOOLCHAIN_FILE":    "${sourceDir}/cmake/x64-linux-cuda-nvidia-rtx4060.cmake",
+            "GGML_CUDA":               "ON",
+            "GGML_HIP":                "OFF",
+            "GGML_VULKAN":             "OFF",
+            "GGML_METAL":              "OFF",
+            "GGML_NATIVE":             "ON",
+            "CMAKE_CUDA_ARCHITECTURES": "89",
+            "GGML_CUDA_FA_ALL_QUANTS": "ON"
+        }
+    },
+    { "name": "x64-linux-cuda-nvidia-RTX4060-release", "inherits": [ "base", "cuda-nvidia-rtx4060", "release" ] },
+    { "name": "x64-linux-cuda-nvidia-RTX4060-debug",   "inherits": [ "base", "cuda-nvidia-rtx4060", "debug"   ] },
+
     { "name": "arm64-windows-llvm-debug", "inherits": [ "base", "arm64-windows-llvm", "debug" ] },
     { "name": "arm64-windows-llvm-release", "inherits": [ "base", "arm64-windows-llvm", "reldbg" ] },
     { "name": "arm64-windows-llvm+static-release", "inherits": [ "base", "arm64-windows-llvm", "reldbg", "static" ] },

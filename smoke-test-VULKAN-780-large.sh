@@ -1,44 +1,39 @@
 #!/usr/bin/env bash
-# smoke-test-ROCM-large-mtp.sh — large-model MTP speculative decoding validation
+# smoke-test-VULKAN-780-large.sh — Vulkan AMD 780M iGPU large-model validation
 #
-# Model:  unsloth/Qwen3.6-27B-UD-Q4_K_XL.gguf  (MTP heads embedded, 65+1 layers)
-# Phases: 1 = baseline q8_0/q8_0 FA, no MTP, -ngl 20  (proves HIP backend + FA)
-#         2 = MTP only, no turbo KV, -ngl 20           (proves draft-mtp path)
-#         3 = MTP + turbo3 V, -ngl 20                  (turbo KV + speculative)
-#         4 = MTP + turbo3 V, -ngl 20, 8K ctx         (stress test)
+# Model:  unsloth/Qwen3.6-27B-UD-Q4_K_XL.gguf  (27B, q4_k_xl quantization, MTP heads)
+# Phases: 1 = q8_0/q8_0 KV + FA, -ngl 10        (GPU layer offload baseline)
+#         2 = q8_0/q8_0 KV + FA, -ngl 20        (more layers on Vulkan GPU)
+#         3 = q8_0/turbo3 KV + FA, -ngl 20      (turbo KV compression + GPU offload)
+#         4 = turbo3 KV + FA, -ngl 20, 4K ctx   (larger context stress test)
 #
-# Usage:  ./smoke-test-ROCM-large-mtp.sh [1|2|3|4|all]   (default: all)
+# Usage:  ./smoke-test-VULKAN-780-large.sh [1|2|3|4|all]   (default: all)
 #
 # Hardware context (780M iGPU — UMA, reports ~24 GiB VRAM shared from system RAM):
 #  - The 780M is UMA: VRAM is a window into system RAM, not dedicated memory.
-#  - HIP binary sees ~24 GiB VRAM; actual safe GPU budget is ~8-10 GiB before
-#    OS page eviction pressure from other processes becomes a problem.
-#  - 27B model weights ~26 GiB at Q4_K_XL; -ngl 20 offloads ~20 layers to GPU
-#    and keeps the remainder on CPU, balancing GPU bandwidth against RAM pressure.
-#  - Adjust -ngl up/down based on observed OOM or throughput.
-#  - GGML_HIP_GRAPHS=OFF is baked into the gfx1103 binary (rocWMMA FA incompatibility).
-#
-# Other notes:
-#  - --spec-type draft-mtp requires MTP heads embedded in the GGUF (Qwen3.6 unsloth build)
-#  - -np 1 is required; MTP does not support parallel sequences (--parallel > 1)
+#  - llama.cpp reports ~24 GiB VRAM available; actual safe budget is ~8-10 GiB
+#    before the OS starts evicting pages from other processes.
+#  - 27B model weights ~26 GiB at Q4_K_XL; partial GPU offload keeps weight
+#    bandwidth on the fast GPU memory path while overflow stays on CPU.
+#  - FA must be ON whenever any quantized KV type is used (q8_0, turbo3, etc.).
+#  - Adjust -ngl based on available RAM; lower if OOM is observed.
+#  - -np 1 required: parallel sequences would exhaust UMA budget too quickly.
 
 set -euo pipefail
 
-BIN=/home/none/git/llama-cpp-turboquant/build-x64-linux-hip-rocm713-gfx1103-release/bin/llama-server
+BIN=/home/none/git/llama-cpp-turboquant/build-x64-linux-vulkan-AMD-780-release/bin/llama-server
 MODEL=/mnt/512_ssd_internal/vai-llm-tei/llm-models/unsloth/Qwen3.6-27B-UD-Q4_K_XL.gguf
-PORT=8081
+PORT=8083
 PHASE=${1:-all}
 
-READY_TIMEOUT=120
+READY_TIMEOUT=180
 
-# Accumulated pass/fail counts across the full run
 PASS_COUNT=0
 FAIL_COUNT=0
 SERVER_PID=
 
 die() { echo "ERROR: $*" >&2; exit 1; }
 
-# Print a prominent phase header showing the phase number and every server flag
 phase_header() {
     local num="$1"; shift
     local desc="$1"; shift
@@ -83,8 +78,6 @@ wait_ready() {
     die "server did not become ready within ${READY_TIMEOUT}s"
 }
 
-# Check inference and print response + throughput.
-# Fails hard if the response body is empty or the HTTP call errors.
 check_inference() {
     local prompt="${1:-Reply with exactly one word: ready}"
     local max_tokens="${2:-24}"
@@ -117,10 +110,6 @@ timings = r.get('timings', {})
 if timings:
     tps = timings.get('predicted_per_second', 0)
     print(f'throughput: {tps:.2f} tok/s')
-    da = timings.get('draft_n_accepted')
-    dt = timings.get('draft_n')
-    if da is not None and dt:
-        print(f'draft acceptance: {da}/{dt} ({da/dt*100:.0f}%)')
 "
 }
 
@@ -141,38 +130,34 @@ record_fail() {
     (( FAIL_COUNT++ )) || true
 }
 
-# Run a single numbered phase.  Returns 0 on pass, 1 on fail (does not exit).
 run_phase() {
     local num="$1"
     local desc flags prompt max_tokens
 
     case "$num" in
     1)
-        desc="baseline — q8_0/q8_0 KV + FA, no MTP, -ngl 20"
-        flags=(-ngl 20 --cache-type-k q8_0 --cache-type-v q8_0 --flash-attn on -c 2048)
+        desc="baseline — q8_0/q8_0 KV + FA, -ngl 10"
+        flags=(-ngl 10 --cache-type-k q8_0 --cache-type-v q8_0 --flash-attn on -c 2048)
         prompt="Reply with exactly one word: ready"
         max_tokens=16
         ;;
     2)
-        desc="MTP draft-mtp, q8_0/q8_0 KV, -ngl 20"
-        flags=(-ngl 20 --cache-type-k q8_0 --cache-type-v q8_0 --flash-attn on
-               --spec-type draft-mtp --spec-draft-n-max 2 -c 2048)
+        desc="more GPU layers — q8_0/q8_0 KV + FA, -ngl 20"
+        flags=(-ngl 20 --cache-type-k q8_0 --cache-type-v q8_0 --flash-attn on -c 2048)
         prompt="Count from 1 to 5, one number per line."
-        max_tokens=48
+        max_tokens=32
         ;;
     3)
-        desc="MTP + turbo3 V — production target, -ngl 20"
-        flags=(-ngl 20 --cache-type-k q8_0 --cache-type-v turbo3 --flash-attn on
-               --spec-type draft-mtp --spec-draft-n-max 2 -c 2048)
+        desc="turbo3 KV + FA, -ngl 20"
+        flags=(-ngl 20 --cache-type-k q8_0 --cache-type-v turbo3 --flash-attn on -c 2048)
         prompt="Count from 1 to 5, one number per line."
-        max_tokens=48
+        max_tokens=32
         ;;
     4)
-        desc="MTP + turbo3 V, 8K context, -ngl 20 — stress test"
-        flags=(-ngl 20 --cache-type-k q8_0 --cache-type-v turbo3 --flash-attn on
-               --spec-type draft-mtp --spec-draft-n-max 2 -c 8192)
+        desc="turbo3 KV + FA, -ngl 20, 4K context stress test"
+        flags=(-ngl 20 --cache-type-k q8_0 --cache-type-v turbo3 --flash-attn on -c 4096)
         prompt="Count from 1 to 5, one number per line."
-        max_tokens=48
+        max_tokens=32
         ;;
     *)
         die "unknown phase '$num'"
@@ -181,7 +166,6 @@ run_phase() {
 
     phase_header "$num" "$desc" "${flags[@]}"
 
-    # Each phase gets its own server; stop any previous one first.
     stop_server
     start_server "${flags[@]}"
 
@@ -202,19 +186,18 @@ trap stop_server EXIT
 [[ -f "$BIN"   ]] || die "binary not found: $BIN"
 [[ -f "$MODEL" ]] || die "model not found: $MODEL"
 
-# Determine which phases to run
 case "$PHASE" in
 all)  phases=(1 2 3 4) ;;
 [1-4]) phases=("$PHASE") ;;
 *)    die "usage: $0 [1|2|3|4|all]" ;;
 esac
 
-echo "smoke-test-large-mtp: running phases: ${phases[*]}"
+echo "smoke-test-VULKAN-780-large: running phases: ${phases[*]}"
 echo "model : $MODEL"
 echo "binary: $BIN"
 
 for p in "${phases[@]}"; do
-    run_phase "$p" || true   # continue even if one phase fails
+    run_phase "$p" || true
 done
 
 echo ""

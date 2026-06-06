@@ -1,10 +1,17 @@
 #!/usr/bin/env bash
-# smoke-test.sh — staged HIP/turbo KV cache validation for gfx1103
+# smoke-test-ROCM-small.sh — staged HIP/turbo KV cache validation for gfx1103
 #
-# Run phases:  1 = baseline (f16/f16, no turbo — proves HIP backend loads)
-#              2 = step-1 ladder (f16 K + turbo4 V — lightest turbo, FA required)
-#              3 = recommended default (q8_0 K + turbo3 V — production target)
-# Usage: ./smoke-test.sh [1|2|3]   (default: 1)
+# Model:  ggml-org/gemma-4-E2B-it-Q8_0.gguf  (~2B, fits fully on GPU)
+# Phases: 1 = baseline q8_0/q8_0 KV + FA, -ngl 99  (proves HIP backend + full GPU load)
+#         2 = f16 K + turbo4 V + FA, -ngl 99        (lightest turbo, step-1 ladder)
+#         3 = q8_0 K + turbo3 V + FA, -ngl 99       (production target)
+#
+# Usage:  ./smoke-test-ROCM-small.sh [1|2|3]   (default: 1)
+#
+# Hardware context (780M iGPU — UMA, reports ~24 GiB VRAM shared from system RAM):
+#  - The 780M is UMA: VRAM is a window into system RAM, not dedicated memory.
+#  - 2B model weights ~2 GiB at Q8_0; fits fully on GPU with -ngl 99.
+#  - HIP backend (gfx1103) dispatches compute directly; GGML_HIP_GRAPHS=OFF baked in.
 
 set -euo pipefail
 
