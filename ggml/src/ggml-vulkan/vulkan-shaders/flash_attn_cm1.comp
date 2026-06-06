@@ -226,7 +226,7 @@ void main() {
                 uint32_t d = (idx + tid) % (HSK_pad / 4);
                 uint32_t c = (idx + tid) / (HSK_pad / 4);
                 if (idx + gl_WorkGroupSize.x <= Bc * HSK_pad / 4 || c < Bc) {
-                    f16vec4 K_Tf = f16vec4(0);
+                    FLOAT_TYPEV4 K_Tf = FLOAT_TYPEV4(0);
                     if ((!KV_bounds_check || j * Bc + c < KV) && (HSK == HSK_pad || d < HSK / 4)) {
                         if (USE_DECODE_K) {
                             uint coord = (j * Bc + c) * k_stride * BLOCK_SIZE_K + 4 * d;
@@ -235,12 +235,12 @@ void main() {
                             K_Tf = dequantize4(ib, iqs, k_offset, BINDING_IDX_K);
                         } else {
 #if !defined(DATA_A_TURBO3_0)
-                            K_Tf = f16vec4(data_kv4[k_offset / 4 + (j * Bc + c) * k_stride / 4 + d]);
+                            K_Tf = FLOAT_TYPEV4(data_kv4[k_offset / 4 + (j * Bc + c) * k_stride / 4 + d]);
 #endif
                         }
                     }
 
-                    kvsh[c * kvsh_stride + d] = K_Tf;
+                    kvsh[c * kvsh_stride + d] = f16vec4(K_Tf);
                 }
             }
             barrier();
@@ -268,7 +268,7 @@ void main() {
                     uint32_t col_vec = (idx + tid) % (MatBr / 4);
                     uint32_t row = (idx + tid) / (MatBr / 4);
                     if (idx + tid < Bc * MatBr / 4) {
-                        f16vec4 K_Tf = f16vec4(0);
+                        FLOAT_TYPEV4 K_Tf = FLOAT_TYPEV4(0);
                         if ((!KV_bounds_check || j * Bc + row < KV) && (HSK == HSK_pad || d * 16 + col_vec * 4 < HSK)) {
                             if (USE_DECODE_K) {
                                 uint coord = (j * Bc + row) * k_stride * BLOCK_SIZE_K + d * 16 + col_vec * 4;
@@ -277,12 +277,12 @@ void main() {
                                 K_Tf = dequantize4(ib, iqs, k_offset, BINDING_IDX_K);
                             } else {
 #if !defined(DATA_A_TURBO3_0)
-                                K_Tf = f16vec4(data_kv4[k_offset / 4 + (j * Bc + row) * k_stride / 4 + d * 16 / 4 + col_vec]);
+                                K_Tf = FLOAT_TYPEV4(data_kv4[k_offset / 4 + (j * Bc + row) * k_stride / 4 + d * 16 / 4 + col_vec]);
 #endif
                             }
                         }
 
-                        kvsh[row * kvsh_stride + col_vec] = K_Tf;
+                        kvsh[row * kvsh_stride + col_vec] = f16vec4(K_Tf);
                     }
                 }
                 barrier();
@@ -397,7 +397,7 @@ void main() {
                 uint32_t d = (idx + tid) % (HSV_pad / 4);
                 uint32_t c = (idx + tid) / (HSV_pad / 4);
                 if (idx + gl_WorkGroupSize.x <= Bc * HSV_pad / 4 || c < Bc) {
-                    f16vec4 V_Tf = f16vec4(0);
+                    FLOAT_TYPEV4 V_Tf = FLOAT_TYPEV4(0);
                     if ((!KV_bounds_check || j * Bc + c < KV) && (HSV == HSV_pad || d < HSV / 4)) {
                         if (USE_DECODE_V) {
                             uint coord = (j * Bc + c) * v_stride * BLOCK_SIZE_V + 4 * d;
@@ -406,12 +406,12 @@ void main() {
                             V_Tf = dequantize4(ib, iqs, v_offset, BINDING_IDX_V);
                         } else {
 #if !defined(DATA_A_TURBO3_0)
-                            V_Tf = f16vec4(data_vv4[v_offset / 4 + (j * Bc + c) * v_stride / 4 + d]);
+                            V_Tf = FLOAT_TYPEV4(data_vv4[v_offset / 4 + (j * Bc + c) * v_stride / 4 + d]);
 #endif
                         }
                     }
 
-                    kvsh[c * kvsh_stride + d] = V_Tf;
+                    kvsh[c * kvsh_stride + d] = f16vec4(V_Tf);
                 }
             }
         }
@@ -453,7 +453,7 @@ void main() {
 
                     if (!KV_bounds_check || (v_row < KV && v_col < HSV)) {
                         if (USE_DECODE_V) {
-                            kvsh[row * vsh_stride + col] = dequantize4(ib, iqs, v_offset, BINDING_IDX_V);
+                            kvsh[row * vsh_stride + col] = f16vec4(dequantize4(ib, iqs, v_offset, BINDING_IDX_V));
                         } else {
 #if !defined(DATA_A_TURBO3_0)
                             kvsh[row * vsh_stride + col] = data_vv4[(v_offset + v_row * v_stride + v_col) / 4];

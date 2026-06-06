@@ -60,7 +60,7 @@ trap stop_server EXIT
 case "$PHASE" in
 1)
     echo "=== phase 1: baseline — f16/f16 KV, no turbo (proves HIP backend loads) ==="
-    start_server
+    start_server --cache-type-k q8_0 --cache-type-v q8_0 --flash-attn on
     wait_ready
     check_inference
     echo "PASS: HIP baseline OK"

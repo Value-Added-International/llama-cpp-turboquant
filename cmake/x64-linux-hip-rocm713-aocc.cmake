@@ -19,6 +19,12 @@ else()
     set(_aocc "/opt/AMD/aocc-compiler-5.2.0")
 endif()
 
+if(DEFINED ENV{ROCWMMA_PATH})
+    set(_rocwmma "$ENV{ROCWMMA_PATH}")
+else()
+    set(_rocwmma "/opt/rocwmma-rocm7.13")
+endif()
+
 set(CMAKE_C_COMPILER   "${_aocc}/bin/clang"      CACHE FILEPATH "C compiler (AMD AOCC)")
 set(CMAKE_CXX_COMPILER "${_aocc}/bin/clang++"    CACHE FILEPATH "C++ compiler (AMD AOCC)")
 set(CMAKE_HIP_COMPILER "${_rocm}/llvm/bin/clang" CACHE FILEPATH "HIP compiler (ROCM amdclang)")
@@ -29,6 +35,9 @@ list(APPEND CMAKE_PREFIX_PATH "${_rocm}")
 # HIP language enable (enable_language(HIP) in ggml-hip) reads these env vars
 set(ENV{HIP_PATH} "${_rocm}")
 set(ENV{HIPCXX}   "${_rocm}/llvm/bin/clang")
+
+# rocWMMA headers are installed outside the main ROCm tree on this system
+set(CMAKE_HIP_FLAGS "${CMAKE_HIP_FLAGS} -I${_rocm}/include -I${_rocwmma}/include" CACHE STRING "" FORCE)
 
 # HIP graph capture is incompatible with the rocWMMA FA kernel on gfx1103 —
 # the FA dispatch uses ops that cannot be recorded inside a HIP graph stream,

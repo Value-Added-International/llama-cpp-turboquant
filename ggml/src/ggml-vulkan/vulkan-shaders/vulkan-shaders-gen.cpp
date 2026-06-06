@@ -767,6 +767,18 @@ void process_shaders() {
     // TurboQuant Walsh-Hadamard Transform op (Q forward + kqv inverse rotation)
     string_to_spv("turbo_wht", "turbo_wht.comp", {});
 
+    // TurboQuant3 dequant (KV-cache weight type — 128-element blocks, 50 bytes)
+    string_to_spv("dequant_turbo3_0", "dequant_turbo3_0.comp", {{"DATA_A_TURBO3_0", "1"}, {"D_TYPE", "float16_t"}});
+
+    // TQ4_1S dequant (weight type — 32-element WHT blocks, 20 bytes)
+    string_to_spv("dequant_tq4_1s", "dequant_tq4_1s.comp", {{"DATA_A_TQ4_1S", "1"}, {"D_TYPE", "float16_t"}});
+
+    // TQ4_1S matvec (dedicated WHT-aware kernel; activation read as float)
+    string_to_spv("mul_mat_vec_tq4_1s_f32_f32", "mul_mat_vec_tq4_1s.comp",
+        {{"DATA_A_TQ4_1S", "1"}, {"B_TYPE", "float"}, {"B_TYPEV2", "vec2"}, {"B_TYPEV4", "vec4"}, {"D_TYPE", "float"}, {"FLOAT_TYPE", "float"}, {"FLOAT_TYPEV2", "vec2"}});
+    string_to_spv("mul_mat_vec_tq4_1s_f16_f32", "mul_mat_vec_tq4_1s.comp",
+        {{"DATA_A_TQ4_1S", "1"}, {"B_TYPE", "float16_t"}, {"B_TYPEV2", "f16vec2"}, {"B_TYPEV4", "f16vec4"}, {"D_TYPE", "float"}, {"FLOAT_TYPE", "float"}, {"FLOAT_TYPEV2", "vec2"}});
+
     auto get_type_str = [](bool f16) {
         return f16 ? "float16_t" : "float";
     };
