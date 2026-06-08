@@ -1,0 +1,5 @@
+#!/bin/true
+# Post-installation script for vai-llama-vulkan package
+# This is a no-op script since all dependencies are bundled
+
+exit 0

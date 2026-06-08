@@ -19,12 +19,15 @@
 #include <vector>
 #include <unordered_set>
 
+#include "arg.h"
 #include "build-info.h"
 #include "common.h"
 #include "download.h"
 #include "fit.h"
 #include "ggml.h"
 #include "llama.h"
+#include "sampling.h"
+#include "speculative.h"
 
 #ifdef _WIN32
 #    define WIN32_LEAN_AND_MEAN
@@ -348,6 +351,10 @@ struct cmd_params {
     std::vector<bool>                no_host;
     std::vector<size_t>              fit_params_target;
     std::vector<uint32_t>            fit_params_min_ctx;
+    std::vector<int>                 mtp_n_max;
+    std::string                      mtp_model;
+    std::vector<ggml_type>           type_k_draft;
+    std::vector<ggml_type>           type_v_draft;
     ggml_numa_strategy               numa;
     int                              reps;
     ggml_sched_priority              prio;
@@ -392,6 +399,10 @@ static const cmd_params cmd_params_defaults = {
     /* no_host              */ { false },
     /* fit_params_target    */ { 0 },
     /* fit_params_min_ctx   */ { 0 },
+    /* mtp_n_max            */ { 0 },
+    /* mtp_model            */ "",
+    /* type_k_draft         */ { GGML_TYPE_F16 },
+    /* type_v_draft         */ { GGML_TYPE_F16 },
     /* numa                 */ GGML_NUMA_STRATEGY_DISABLED,
     /* reps                 */ 5,
     /* prio                 */ GGML_SCHED_PRIO_NORMAL,
@@ -420,6 +431,11 @@ static void print_usage(int /* argc */, char ** argv) {
     printf("  --no-warmup                                 skip warmup runs before benchmarking\n");
     printf("  -fitt, --fit-target <MiB>                   fit model to device memory with this margin per device in MiB (default: off)\n");
     printf("  -fitc, --fit-ctx <n>                        minimum ctx size for --fit-target (default: 4096)\n");
+    printf("  --mtp-n-max <n>                             enable MTP speculative decoding; 0 = disabled (default: %s)\n", join(cmd_params_defaults.mtp_n_max, ",").c_str());
+    printf("                                              requires model with MTP heads (same GGUF as -m, or separate file via --mtp-model)\n");
+    printf("  --mtp-model <path>                          draft model path for MTP (default: same file as -m)\n");
+    printf("  -ctkd, --cache-type-k-draft <t>             KV cache K type for MTP draft context (default: %s)\n", join(transform_to_str(cmd_params_defaults.type_k_draft, ggml_type_name), ",").c_str());
+    printf("  -ctvd, --cache-type-v-draft <t>             KV cache V type for MTP draft context (default: %s)\n", join(transform_to_str(cmd_params_defaults.type_v_draft, ggml_type_name), ",").c_str());
     if (llama_supports_rpc()) {
         printf("  -rpc, --rpc <rpc_servers>                   register RPC devices (comma separated)\n");
     }
@@ -997,6 +1013,47 @@ static cmd_params parse_cmd_params(int argc, char ** argv) {
                 for (const auto & v : p) {
                     params.fit_params_min_ctx.push_back(std::stoul(v));
                 }
+            } else if (arg == "--mtp-n-max") {
+                if (++i >= argc) {
+                    invalid_param = true;
+                    break;
+                }
+                auto p = parse_int_range(argv[i]);
+                params.mtp_n_max.insert(params.mtp_n_max.end(), p.begin(), p.end());
+            } else if (arg == "--mtp-model") {
+                if (++i >= argc) {
+                    invalid_param = true;
+                    break;
+                }
+                params.mtp_model = argv[i];
+            } else if (arg == "-ctkd" || arg == "--cache-type-k-draft") {
+                if (++i >= argc) {
+                    invalid_param = true;
+                    break;
+                }
+                auto p = string_split<std::string>(argv[i], split_delim);
+                for (const auto & t : p) {
+                    ggml_type gt = ggml_type_from_name(t);
+                    if (gt == GGML_TYPE_COUNT) {
+                        invalid_param = true;
+                        break;
+                    }
+                    params.type_k_draft.push_back(gt);
+                }
+            } else if (arg == "-ctvd" || arg == "--cache-type-v-draft") {
+                if (++i >= argc) {
+                    invalid_param = true;
+                    break;
+                }
+                auto p = string_split<std::string>(argv[i], split_delim);
+                for (const auto & t : p) {
+                    ggml_type gt = ggml_type_from_name(t);
+                    if (gt == GGML_TYPE_COUNT) {
+                        invalid_param = true;
+                        break;
+                    }
+                    params.type_v_draft.push_back(gt);
+                }
             } else {
                 invalid_param = true;
                 break;
@@ -1125,6 +1182,15 @@ static cmd_params parse_cmd_params(int argc, char ** argv) {
     if (params.fit_params_min_ctx.empty()) {
         params.fit_params_min_ctx = cmd_params_defaults.fit_params_min_ctx;
     }
+    if (params.mtp_n_max.empty()) {
+        params.mtp_n_max = cmd_params_defaults.mtp_n_max;
+    }
+    if (params.type_k_draft.empty()) {
+        params.type_k_draft = cmd_params_defaults.type_k_draft;
+    }
+    if (params.type_v_draft.empty()) {
+        params.type_v_draft = cmd_params_defaults.type_v_draft;
+    }
 
     return params;
 }
@@ -1158,6 +1224,9 @@ struct cmd_params_instance {
     bool               no_host;
     size_t             fit_target;
     uint32_t           fit_min_ctx;
+    int                mtp_n_max;
+    ggml_type          type_k_draft;
+    ggml_type          type_v_draft;
 
     llama_model_params to_llama_mparams() const {
         llama_model_params mparams = llama_model_default_params();
@@ -1248,6 +1317,9 @@ static std::vector<cmd_params_instance> get_cmd_params_instances(const cmd_param
     for (const auto & m : params.model)
     for (const auto & fpt : params.fit_params_target)
     for (const auto & fpc : params.fit_params_min_ctx)
+    for (const auto & mtp : params.mtp_n_max)
+    for (const auto & tkd : params.type_k_draft)
+    for (const auto & tvd : params.type_v_draft)
     for (const auto & nl : params.n_gpu_layers)
     for (const auto & ncmoe : params.n_cpu_moe)
     for (const auto & sm : params.split_mode)
@@ -1302,8 +1374,11 @@ static std::vector<cmd_params_instance> get_cmd_params_instances(const cmd_param
                 /* .embeddings   = */ embd,
                 /* .no_op_offload= */ nopo,
                 /* .no_host      = */ noh,
-                /* .fit_target   = */ fpt,
-                /* .fit_min_ctx  = */ fpc,
+                /* .fit_target    = */ fpt,
+                /* .fit_min_ctx   = */ fpc,
+                /* .mtp_n_max     = */ mtp,
+                /* .type_k_draft  = */ tkd,
+                /* .type_v_draft  = */ tvd,
             };
             instances.push_back(instance);
         }
@@ -1339,8 +1414,11 @@ static std::vector<cmd_params_instance> get_cmd_params_instances(const cmd_param
                 /* .embeddings   = */ embd,
                 /* .no_op_offload= */ nopo,
                 /* .no_host      = */ noh,
-                /* .fit_target   = */ fpt,
-                /* .fit_min_ctx  = */ fpc,
+                /* .fit_target    = */ fpt,
+                /* .fit_min_ctx   = */ fpc,
+                /* .mtp_n_max     = */ mtp,
+                /* .type_k_draft  = */ tkd,
+                /* .type_v_draft  = */ tvd,
             };
             instances.push_back(instance);
         }
@@ -1376,8 +1454,11 @@ static std::vector<cmd_params_instance> get_cmd_params_instances(const cmd_param
                 /* .embeddings   = */ embd,
                 /* .no_op_offload= */ nopo,
                 /* .no_host      = */ noh,
-                /* .fit_target   = */ fpt,
-                /* .fit_min_ctx  = */ fpc,
+                /* .fit_target    = */ fpt,
+                /* .fit_min_ctx   = */ fpc,
+                /* .mtp_n_max     = */ mtp,
+                /* .type_k_draft  = */ tkd,
+                /* .type_v_draft  = */ tvd,
             };
             instances.push_back(instance);
         }
@@ -1420,6 +1501,9 @@ struct test {
     bool                     no_host;
     size_t                   fit_target;
     uint32_t                 fit_min_ctx;
+    int                      mtp_n_max;
+    ggml_type                type_k_draft;
+    ggml_type                type_v_draft;
     int                      n_prompt;
     int                      n_gen;
     int                      n_depth;
@@ -1460,6 +1544,9 @@ struct test {
         no_host        = inst.no_host;
         fit_target     = inst.fit_target;
         fit_min_ctx    = inst.fit_min_ctx;
+        mtp_n_max      = inst.mtp_n_max;
+        type_k_draft   = inst.type_k_draft;
+        type_v_draft   = inst.type_v_draft;
         n_prompt       = inst.n_prompt;
         n_gen          = inst.n_gen;
         n_depth        = inst.n_depth;
@@ -1518,7 +1605,7 @@ struct test {
             "main_gpu",       "no_kv_offload",  "flash_attn",    "devices",        "tensor_split",
             "tensor_buft_overrides",            "use_mmap",      "use_direct_io",  "embeddings",
             "no_op_offload",  "no_host",        "fit_target",     "fit_min_ctx",
-            "n_prompt",       "n_gen",          "n_depth",
+            "mtp_n_max",      "type_k_draft",   "type_v_draft",   "n_prompt",       "n_gen",          "n_depth",
             "test_time",      "avg_ns",         "stddev_ns",     "avg_ts",         "stddev_ts"
         };
         return fields;
@@ -1531,7 +1618,7 @@ struct test {
             field == "poll" || field == "model_size" || field == "model_n_params" || field == "n_gpu_layers" ||
             field == "main_gpu" || field == "n_prompt" || field == "n_gen" || field == "n_depth" || field == "avg_ns" ||
             field == "stddev_ns" || field == "no_op_offload" || field == "n_cpu_moe" ||
-            field == "fit_target" || field == "fit_min_ctx") {
+            field == "fit_target" || field == "fit_min_ctx" || field == "mtp_n_max") {
             return INT;
         }
         if (field == "f16_kv" || field == "no_kv_offload" || field == "cpu_strict" || field == "flash_attn" ||
@@ -1614,6 +1701,9 @@ struct test {
                                             std::to_string(no_host),
                                             std::to_string(fit_target),
                                             std::to_string(fit_min_ctx),
+                                            std::to_string(mtp_n_max),
+                                            ggml_type_name(type_k_draft),
+                                            ggml_type_name(type_v_draft),
                                             std::to_string(n_prompt),
                                             std::to_string(n_gen),
                                             std::to_string(n_depth),
@@ -1863,6 +1953,15 @@ struct markdown_printer : public printer {
         if (field == "fit_min_ctx") {
             return "fitc";
         }
+        if (field == "mtp_n_max") {
+            return "mtp";
+        }
+        if (field == "type_k_draft") {
+            return "type_k_dft";
+        }
+        if (field == "type_v_draft") {
+            return "type_v_dft";
+        }
         return field;
     }
 
@@ -1946,6 +2045,15 @@ struct markdown_printer : public printer {
         }
         if (params.fit_params_min_ctx.size() > 1 || params.fit_params_min_ctx != cmd_params_defaults.fit_params_min_ctx) {
             fields.emplace_back("fit_min_ctx");
+        }
+        if (params.mtp_n_max.size() > 1 || params.mtp_n_max != cmd_params_defaults.mtp_n_max) {
+            fields.emplace_back("mtp_n_max");
+        }
+        if (params.type_k_draft.size() > 1 || params.type_k_draft != cmd_params_defaults.type_k_draft) {
+            fields.emplace_back("type_k_draft");
+        }
+        if (params.type_v_draft.size() > 1 || params.type_v_draft != cmd_params_defaults.type_v_draft) {
+            fields.emplace_back("type_v_draft");
         }
         fields.emplace_back("test");
         fields.emplace_back("t/s");
@@ -2071,14 +2179,22 @@ struct ctx_state {
     std::vector<uint8_t> buf; // the llama_context state buffer
 };
 
-static bool test_prompt(llama_context * ctx, int n_prompt, int n_batch, int n_threads) {
+static bool test_prompt(llama_context * ctx, int n_prompt, int n_batch, int n_threads,
+                        common_speculative * spec = nullptr) {
     llama_set_n_threads(ctx, n_threads, n_threads);
 
     const llama_model * model   = llama_get_model(ctx);
     const llama_vocab * vocab   = llama_model_get_vocab(model);
     const int32_t       n_vocab = llama_vocab_n_tokens(vocab);
 
+    // MTP draft needs embeddings from every target prefill ubatch.
+    const bool need_embd = common_speculative_need_embd(spec);
+
     std::vector<llama_token> tokens(n_batch);
+
+    // When MTP is active we need per-token logits flags; llama_batch_get_one()
+    // doesn't allocate logits[], so use a heap batch for that path.
+    llama_batch heap_batch = need_embd ? llama_batch_init(n_batch, 0, 1) : llama_batch{};
 
     int n_processed = 0;
 
@@ -2088,13 +2204,33 @@ static bool test_prompt(llama_context * ctx, int n_prompt, int n_batch, int n_th
         for (int i = 1; i < n_tokens; i++) {
             tokens[i] = std::rand() % n_vocab;
         }
-        int res = llama_decode(ctx, llama_batch_get_one(tokens.data(), n_tokens));
+
+        llama_batch batch;
+        if (need_embd) {
+            common_batch_clear(heap_batch);
+            for (int i = 0; i < n_tokens; i++) {
+                common_batch_add(heap_batch, tokens[i], n_processed + i, { 0 }, true);
+            }
+            batch = heap_batch;
+        } else {
+            batch = llama_batch_get_one(tokens.data(), n_tokens);
+        }
+
+        int res = llama_decode(ctx, batch);
         if (res != 0) {
+            if (need_embd) { llama_batch_free(heap_batch); }
             fprintf(stderr, "%s: failed to decode prompt batch, res = %d\n", __func__, res);
             return false;
         }
+
+        if (spec) {
+            common_speculative_process(spec, batch);
+        }
+
         n_processed += n_tokens;
     }
+
+    if (need_embd) { llama_batch_free(heap_batch); }
 
     llama_synchronize(ctx);
     return true;
@@ -2118,6 +2254,84 @@ static bool test_gen(llama_context * ctx, int n_gen, int n_threads) {
         llama_synchronize(ctx);
         token = std::rand() % n_vocab;
     }
+    return true;
+}
+
+// MTP speculative generation: drafts up to mtp_n_max tokens per step and verifies
+// with the main context. Fills the same wall-clock slot as test_gen so timings are
+// directly comparable. n_prompt must match the prefill already decoded into ctx.
+// Returns false on decode error.
+static bool test_gen_mtp(llama_context * ctx, int n_gen, int n_threads,
+                         common_speculative * spec, int32_t mtp_n_max, int n_prompt) {
+    llama_set_n_threads(ctx, n_threads, n_threads);
+
+    const llama_model * model   = llama_get_model(ctx);
+    const llama_vocab * vocab   = llama_model_get_vocab(model);
+    const int32_t       n_vocab = llama_vocab_n_tokens(vocab);
+
+    common_params_sampling sp{};
+    common_sampler_ptr smpl(common_sampler_init(model, sp));
+
+    const llama_seq_id seq_id = 0;
+
+    // Prompt was already decoded into ctx by test_prompt() and
+    // common_speculative_begin() was called before that prefill in the main loop.
+    // Reconstruct a matching token list so we have id_last and the full context.
+    llama_tokens prompt_tgt;
+    prompt_tgt.reserve(n_prompt);
+    prompt_tgt.push_back(llama_vocab_get_add_bos(vocab) ? llama_vocab_bos(vocab) : std::rand() % n_vocab);
+    for (int i = 1; i < n_prompt; ++i) {
+        prompt_tgt.push_back(std::rand() % n_vocab);
+    }
+
+    llama_token id_last = prompt_tgt.back();
+    int32_t     n_past  = n_prompt;
+    int         done    = 0;
+
+    llama_batch batch_tgt = llama_batch_init(llama_n_batch(ctx), 0, 1);
+    llama_tokens draft;
+
+    while (done < n_gen) {
+        draft.clear();
+
+        common_speculative_get_draft_params(spec, seq_id) = {
+            /* .drafting = */ true,
+            /* .n_max    = */ mtp_n_max,
+            /* .n_past   = */ n_past,
+            /* .id_last  = */ id_last,
+            /* .prompt   = */ &prompt_tgt,
+            /* .result   = */ &draft,
+        };
+        common_speculative_draft(spec);
+
+        common_batch_clear(batch_tgt);
+        common_batch_add(batch_tgt, id_last, n_past, { seq_id }, true);
+        for (int i = 0; i < (int) draft.size(); ++i) {
+            common_batch_add(batch_tgt, draft[i], n_past + 1 + i, { seq_id }, true);
+        }
+
+        if (llama_decode(ctx, batch_tgt) != 0) {
+            fprintf(stderr, "%s: llama_decode() failed\n", __func__);
+            llama_batch_free(batch_tgt);
+            return false;
+        }
+        llama_synchronize(ctx);
+
+        auto ids = common_sampler_sample_and_accept_n(smpl.get(), ctx, draft);
+
+        const int32_t n_acc = (int32_t) ids.size() - 1;
+        common_speculative_accept(spec, seq_id, n_acc);
+
+        n_past += (int32_t) ids.size();
+        done   += (int32_t) ids.size();
+
+        for (auto tok : ids) {
+            prompt_tgt.push_back(tok);
+        }
+        id_last = ids.back();
+    }
+
+    llama_batch_free(batch_tgt);
     return true;
 }
 
@@ -2275,9 +2489,71 @@ int main(int argc, char ** argv) {
             return 1;
         }
 
+        // set up MTP speculative engine for this instance
+        llama_model_ptr         mtp_model_dft;
+        llama_context_ptr       mtp_ctx_dft;
+        common_speculative_ptr  mtp_spec;
+
+        if (inst.mtp_n_max > 0) {
+            // Build a minimal common_params for MTP draft model resolution.
+            // MTP heads are embedded in the same GGUF; common_params_handle_models
+            // auto-detects the sidecar path when spec type is DRAFT_MTP.
+            common_params mtp_params;
+            mtp_params.model.path                     = inst.model;
+            mtp_params.n_gpu_layers                   = inst.n_gpu_layers;
+            mtp_params.speculative.types              = { COMMON_SPECULATIVE_TYPE_DRAFT_MTP };
+            mtp_params.speculative.draft.n_max        = inst.mtp_n_max;
+            mtp_params.speculative.draft.cache_type_k = inst.type_k_draft;
+            mtp_params.speculative.draft.cache_type_v = inst.type_v_draft;
+
+            // For local paths, auto-detection via common_params_handle_models only
+            // works for -hf downloads. Set the draft path explicitly: --mtp-model if
+            // provided, otherwise same file as the main model (same-file MTP).
+            if (!params.mtp_model.empty()) {
+                mtp_params.speculative.draft.mparams.path = params.mtp_model;
+            } else {
+                mtp_params.speculative.draft.mparams.path = inst.model;
+            }
+
+            if (mtp_params.speculative.draft.mparams.path.empty()) {
+                fprintf(stderr, "%s: warn: --mtp-n-max set but no draft model path found; skipping MTP for this run\n", __func__);
+            } else {
+                // Reuse the already-loaded lmodel so the draft context shares GPU
+                // weights with the target — no second VRAM allocation for weights.
+                {
+                    llama_context_params cparams_dft = llama_context_default_params();
+                    // KV cache sized for target context + mtp draft tokens.
+                    cparams_dft.n_ctx        = (uint32_t)(inst.n_prompt + inst.n_gen + inst.mtp_n_max + 1);
+                    // n_batch must match the target's n_batch so process() internal
+                    // batch can hold a full prefill ubatch worth of tokens.
+                    cparams_dft.n_batch      = inst.n_batch;
+                    // n_ubatch stays tiny — compute scratch scales with ubatch,
+                    // keeping the draft overhead small alongside the main context.
+                    cparams_dft.n_ubatch     = inst.mtp_n_max + 1;
+                    cparams_dft.type_k       = inst.type_k_draft;
+                    cparams_dft.type_v       = inst.type_v_draft;
+                    cparams_dft.flash_attn_type = llama_context_default_params().flash_attn_type;
+                    cparams_dft.offload_kqv  = true;
+                    mtp_ctx_dft.reset(llama_init_from_model(lmodel, cparams_dft));
+                }
+                // mtp_model_dft stays null — lmodel is owned by the main loop.
+
+                if (mtp_ctx_dft) {
+                    mtp_params.speculative.draft.ctx_tgt = ctx;
+                    mtp_params.speculative.draft.ctx_dft = mtp_ctx_dft.get();
+                    mtp_spec.reset(common_speculative_init(mtp_params.speculative, 1));
+                }
+
+                if (!mtp_spec) {
+                    fprintf(stderr, "%s: warn: MTP init failed; falling back to plain gen\n", __func__);
+                }
+            }
+        }
+
         test t(inst, lmodel, ctx);
 
         llama_memory_clear(llama_get_memory(ctx), false);
+        if (mtp_ctx_dft) { llama_memory_clear(llama_get_memory(mtp_ctx_dft.get()), false); }
 
         // cool off before the test
         if (params.delay) {
@@ -2312,7 +2588,7 @@ int main(int argc, char ** argv) {
                     fprintf(stderr, "llama-bench: benchmark %d/%zu: warmup prompt run\n", params_idx, params_count);
                 }
                 //test_prompt(ctx, std::min(t.n_batch, std::min(t.n_prompt, 32)), 0, t.n_batch, t.n_threads);
-                bool res = test_prompt(ctx, t.n_prompt, t.n_batch, t.n_threads);
+                bool res = test_prompt(ctx, t.n_prompt, t.n_batch, t.n_threads, mtp_spec.get());
                 if (!res) {
                     fprintf(stderr, "%s: error: failed to run prompt warmup\n", __func__);
                     llama_free(ctx);
@@ -2324,7 +2600,9 @@ int main(int argc, char ** argv) {
                 if (params.progress) {
                     fprintf(stderr, "llama-bench: benchmark %d/%zu: warmup generation run\n", params_idx, params_count);
                 }
-                bool res = test_gen(ctx, 1, t.n_threads);
+                bool res = (mtp_spec)
+                    ? test_gen_mtp(ctx, 1, t.n_threads, mtp_spec.get(), inst.mtp_n_max, t.n_prompt)
+                    : test_gen(ctx, 1, t.n_threads);
                 if (!res) {
                     fprintf(stderr, "%s: error: failed to run gen warmup\n", __func__);
                     llama_free(ctx);
@@ -2336,6 +2614,7 @@ int main(int argc, char ** argv) {
 
         for (int i = 0; i < params.reps; i++) {
             llama_memory_clear(llama_get_memory(ctx), false);
+            if (mtp_ctx_dft) { llama_memory_clear(llama_get_memory(mtp_ctx_dft.get()), false); }
 
             if (t.n_depth > 0) {
                 bool is_cached = t.n_depth == cstate.depth;
@@ -2354,7 +2633,7 @@ int main(int argc, char ** argv) {
                         fprintf(stderr, "llama-bench: benchmark %d/%zu: depth run %d/%d\n", params_idx, params_count,
                                 i + 1, params.reps);
                     }
-                    bool res = test_prompt(ctx, t.n_depth, t.n_batch, t.n_threads);
+                    bool res = test_prompt(ctx, t.n_depth, t.n_batch, t.n_threads, mtp_spec.get());
                     if (!res) {
                         fprintf(stderr, "%s: error: failed to run depth\n", __func__);
                         llama_free(ctx);
@@ -2381,7 +2660,7 @@ int main(int argc, char ** argv) {
                     fprintf(stderr, "llama-bench: benchmark %d/%zu: prompt run %d/%d\n", params_idx, params_count,
                             i + 1, params.reps);
                 }
-                bool res = test_prompt(ctx, t.n_prompt, t.n_batch, t.n_threads);
+                bool res = test_prompt(ctx, t.n_prompt, t.n_batch, t.n_threads, mtp_spec.get());
                 if (!res) {
                     fprintf(stderr, "%s: error: failed to run prompt\n", __func__);
                     llama_free(ctx);
@@ -2391,10 +2670,12 @@ int main(int argc, char ** argv) {
             }
             if (t.n_gen > 0) {
                 if (params.progress) {
-                    fprintf(stderr, "llama-bench: benchmark %d/%zu: generation run %d/%d\n", params_idx, params_count,
-                            i + 1, params.reps);
+                    fprintf(stderr, "llama-bench: benchmark %d/%zu: generation run %d/%d%s\n", params_idx, params_count,
+                            i + 1, params.reps, mtp_spec ? " (MTP)" : "");
                 }
-                bool res = test_gen(ctx, t.n_gen, t.n_threads);
+                bool res = (mtp_spec)
+                    ? test_gen_mtp(ctx, t.n_gen, t.n_threads, mtp_spec.get(), inst.mtp_n_max, t.n_prompt)
+                    : test_gen(ctx, t.n_gen, t.n_threads);
                 if (!res) {
                     fprintf(stderr, "%s: error: failed to run gen\n", __func__);
                     llama_free(ctx);

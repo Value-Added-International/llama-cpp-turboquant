@@ -1,0 +1,151 @@
+{
+  "_comment": "VAI llama-bench configuration — 2026-06-07",
+
+  "_kv_cache_combinations": {
+    "_source": "ggml/src/ggml-cuda/fattn.cu — FATTN_VEC_CASES_ALL_D registrations (lines 277-394)",
+    "_note_always_enabled": "Turbo types are always registered regardless of GGML_CUDA_FA_ALL_QUANTS flag",
+    "_note_fa_all_quants":  "Standard quant cross-combinations (q4_0/q4_1/q5_0/q5_1/q8_0/bf16 mixed) require build flag -DGGML_CUDA_FA_ALL_QUANTS=ON",
+    "always_available": [
+      {"ctk": "f16",    "ctv": "f16",    "notes": "baseline, always registered"},
+      {"ctk": "q4_0",  "ctv": "q4_0",   "notes": "always registered"},
+      {"ctk": "q8_0",  "ctv": "q8_0",   "notes": "always registered"},
+      {"ctk": "bf16",  "ctv": "bf16",   "notes": "always registered"},
+      {"ctk": "turbo2","ctv": "turbo2", "notes": "TurboQuant2 symmetric"},
+      {"ctk": "turbo3","ctv": "turbo3", "notes": "TurboQuant3 symmetric"},
+      {"ctk": "turbo4","ctv": "turbo4", "notes": "TurboQuant4 symmetric"},
+      {"ctk": "turbo4","ctv": "q8_0",   "notes": "turbo4 K + q8_0 V"},
+      {"ctk": "q8_0",  "ctv": "turbo4", "notes": "q8_0 K + turbo4 V"},
+      {"ctk": "q4_0",  "ctv": "turbo4", "notes": "q4_0 K + turbo4 V"},
+      {"ctk": "q4_1",  "ctv": "turbo4", "notes": "q4_1 K + turbo4 V"},
+      {"ctk": "f16",   "ctv": "turbo4", "notes": "f16 K + turbo4 V"},
+      {"ctk": "turbo4","ctv": "f16",    "notes": "turbo4 K + f16 V"},
+      {"ctk": "turbo4","ctv": "turbo3", "notes": "turbo4 K + turbo3 V"},
+      {"ctk": "turbo3","ctv": "turbo4", "notes": "turbo3 K + turbo4 V"},
+      {"ctk": "turbo4","ctv": "turbo2", "notes": "turbo4 K + turbo2 V"},
+      {"ctk": "turbo2","ctv": "turbo4", "notes": "turbo2 K + turbo4 V"},
+      {"ctk": "turbo3","ctv": "q8_0",   "notes": "turbo3 K + q8_0 V"},
+      {"ctk": "q8_0",  "ctv": "turbo3", "notes": "q8_0 K + turbo3 V"},
+      {"ctk": "q4_0",  "ctv": "turbo3", "notes": "q4_0 K + turbo3 V"},
+      {"ctk": "q4_1",  "ctv": "turbo3", "notes": "q4_1 K + turbo3 V"},
+      {"ctk": "f16",   "ctv": "turbo3", "notes": "f16 K + turbo3 V"},
+      {"ctk": "turbo3","ctv": "f16",    "notes": "turbo3 K + f16 V"},
+      {"ctk": "turbo3","ctv": "turbo2", "notes": "turbo3 K + turbo2 V"},
+      {"ctk": "turbo2","ctv": "turbo3", "notes": "turbo2 K + turbo3 V"},
+      {"ctk": "turbo2","ctv": "q8_0",   "notes": "turbo2 K + q8_0 V"},
+      {"ctk": "q8_0",  "ctv": "turbo2", "notes": "q8_0 K + turbo2 V"},
+      {"ctk": "q4_0",  "ctv": "turbo2", "notes": "q4_0 K + turbo2 V"},
+      {"ctk": "q4_1",  "ctv": "turbo2", "notes": "q4_1 K + turbo2 V"},
+      {"ctk": "f16",   "ctv": "turbo2", "notes": "f16 K + turbo2 V"},
+      {"ctk": "turbo2","ctv": "f16",    "notes": "turbo2 K + f16 V"}
+    ],
+    "requires_FA_ALL_QUANTS_build_flag": [
+      {"ctk": "q4_0",  "ctv": "f16"},   {"ctk": "q4_1",  "ctv": "f16"},
+      {"ctk": "q5_0",  "ctv": "f16"},   {"ctk": "q5_1",  "ctv": "f16"},
+      {"ctk": "q8_0",  "ctv": "f16"},   {"ctk": "bf16",  "ctv": "f16"},
+      {"ctk": "f16",   "ctv": "q4_0"},  {"ctk": "q4_1",  "ctv": "q4_0"},
+      {"ctk": "q5_0",  "ctv": "q4_0"},  {"ctk": "q5_1",  "ctv": "q4_0"},
+      {"ctk": "q8_0",  "ctv": "q4_0"},  {"ctk": "bf16",  "ctv": "q4_0"},
+      {"ctk": "f16",   "ctv": "q4_1"},  {"ctk": "q4_0",  "ctv": "q4_1"},
+      {"ctk": "q5_0",  "ctv": "q4_1"},  {"ctk": "q5_1",  "ctv": "q4_1"},
+      {"ctk": "q8_0",  "ctv": "q4_1"},  {"ctk": "bf16",  "ctv": "q4_1"},
+      {"ctk": "f16",   "ctv": "q5_0"},  {"ctk": "q4_0",  "ctv": "q5_0"},
+      {"ctk": "q4_1",  "ctv": "q5_0"},  {"ctk": "q5_1",  "ctv": "q5_0"},
+      {"ctk": "q8_0",  "ctv": "q5_0"},  {"ctk": "bf16",  "ctv": "q5_0"},
+      {"ctk": "q5_0",  "ctv": "q5_0"},  {"ctk": "f16",   "ctv": "q5_1"},
+      {"ctk": "q4_0",  "ctv": "q5_1"},  {"ctk": "q4_1",  "ctv": "q5_1"},
+      {"ctk": "q5_0",  "ctv": "q5_1"},  {"ctk": "q5_1",  "ctv": "q5_1"},
+      {"ctk": "q8_0",  "ctv": "q5_1"},  {"ctk": "bf16",  "ctv": "q5_1"},
+      {"ctk": "f16",   "ctv": "q8_0"},  {"ctk": "q4_0",  "ctv": "q8_0"},
+      {"ctk": "q4_1",  "ctv": "q8_0"},  {"ctk": "q5_0",  "ctv": "q8_0"},
+      {"ctk": "q5_1",  "ctv": "q8_0"},  {"ctk": "bf16",  "ctv": "q8_0"},
+      {"ctk": "f16",   "ctv": "bf16"},  {"ctk": "q4_0",  "ctv": "bf16"},
+      {"ctk": "q4_1",  "ctv": "bf16"},  {"ctk": "q5_0",  "ctv": "bf16"},
+      {"ctk": "q5_1",  "ctv": "bf16"},  {"ctk": "q8_0",  "ctv": "bf16"},
+      {"ctk": "bf16",  "ctv": "q8_0"}
+    ]
+  },
+
+  "bench_params": {
+    "kv_types": [
+      {"ctk": "turbo4", "ctv": "turbo4"},
+      {"ctk": "turbo3", "ctv": "turbo3"},
+      {"ctk": "q8_0",   "ctv": "q8_0"}
+    ],
+    "prompts": [1024, 2048, 4096, 8192],
+    "_prompts_note": "Minimum 1024: ROCm VEC/WMMA kernels only compute KV_max (OOB guard) when Q->ne[1] >= 1024. Below that threshold the kernel iterates to n_ctx over uninitialised UMA rows → GPU hang on gfx1103.",
+    "n_gen": 512,
+    "flash_attn": 1,
+    "kv_offload": 0,
+    "repetitions": 3
+  },
+  "_kv_offload_note": "-nkvo 0 means no_kv_offload=false → KV cache IS offloaded to VRAM (offload_kqv=true). Set to 1 to force KV cache to CPU RAM instead.",
+  "backends": {
+    "cuda": {
+      "binary": "/home/none/git/llama-cpp-turboquant/build-x64-linux-cuda-nvidia-RTX4060-release/bin/llama-bench",
+      "enabled": true,
+      "split_mode": "layer",
+      "vram_monitor": "nvidia-smi"
+    },
+    "rocm": {
+      "binary": "/home/none/git/llama-cpp-turboquant/build-x64-linux-hip-rocm713-gfx1103-release/bin/llama-bench",
+      "enabled": true,
+      "split_mode": "layer",
+      "vram_monitor": "rocm-smi"
+    },
+    "vulkan": {
+      "binary": "/home/none/git/llama-cpp-turboquant/build-x64-linux-vulkan-AMD-780-release/bin/llama-bench",
+      "enabled": true,
+      "split_mode": "layer",
+      "vram_monitor": "rocm-smi"
+    }
+  },
+  "models": [
+    {
+      "name": "gemma-4-12B-it-qat",
+      "path": "/mnt/512_ssd_internal/vai-llm-tei/llm-models/unsloth/gemma-4-12B-it-qat-UD-Q4_K_XL.gguf",
+      "architecture": "gemma4-dense",
+      "total_layers": 48,
+      "context_max": 262144,
+      "temperature": 1.0,
+      "top_p": 0.95,
+      "top_k": 64,
+      "ngl_cuda_candidates":   [48, 45, 40, 35, 30, 25, 20],
+      "ngl_rocm_candidates":   [30, 25, 20, 15, 10],
+      "ngl_vulkan_candidates": [20, 15, 10, 5]
+    },
+    {
+      "name": "gemma-4-26B-A4B-it-qat",
+      "path": "/mnt/512_ssd_internal/vai-llm-tei/llm-models/unsloth/gemma-4-26B-A4B-it-qat-UD-Q4_K_XL.gguf",
+      "architecture": "gemma4-moe",
+      "total_layers": 30,
+      "context_max": 262144,
+      "temperature": 1.0,
+      "top_p": 0.95,
+      "top_k": 64,
+      "ngl_cuda_candidates":   [30, 25, 20, 15, 10],
+      "ngl_rocm_candidates":   [20, 15, 10, 5],
+      "ngl_vulkan_candidates": [10, 8, 5, 3]
+    },
+    {
+      "name": "gemma-4-31B-it-qat",
+      "path": "/mnt/512_ssd_internal/vai-llm-tei/llm-models/unsloth/gemma-4-31B-it-qat-UD-Q4_K_XL.gguf",
+      "architecture": "gemma4-dense",
+      "total_layers": 60,
+      "context_max": 262144,
+      "temperature": 1.0,
+      "top_p": 0.95,
+      "top_k": 64,
+      "ngl_cuda_candidates":   [35, 30, 25, 20, 15],
+      "ngl_rocm_candidates":   [20, 15, 10, 5],
+      "ngl_vulkan_candidates": [10, 8, 5, 3]
+    }
+  ],
+  "logging": {
+    "log_dir": "/home/none/git/llama-cpp-turboquant/lamma-bench-logs",
+    "vram_sample_interval_s": 5
+  },
+  "watchdog": {
+    "timeout_s": 1800,
+    "max_retries": 2
+  }
+}

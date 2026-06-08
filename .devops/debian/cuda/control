@@ -1,0 +1,34 @@
+Package: vai-llama-cuda
+Version: 0.0.$(git rev-list --count HEAD)
+Architecture: amd64
+Maintainer: VAI Team <team@vai.example.com>
+Installed-Size: 180000
+Section: science
+Priority: optional
+Multi-Arch: same
+Depends: libc6 (>= 2.31), libstdc++6 (>= 8), ${shlibs:Depends}, ${misc:Depends}
+Recommends: nvidia-cuda-toolkit
+Description: llama-cpp-turboquant NVIDIA CUDA backend package
+ A self-contained CUDA-based inference engine for large language models.
+
+ This package includes a complete, zero-runtime-dependency installation of
+ the llama-cpp-turboquant library with NVIDIA CUDA GPU acceleration. All required
+ runtime libraries are bundled within the package.
+
+ Components:
+   - llama-cli: Command-line interface for running LLMs
+   - llama-server: REST API server for LLM inference
+   - llama-bench: Benchmarking tool for performance testing
+   - Tools and utilities for model management
+
+ Requirements (host system):
+   - NVIDIA GPU with compute capability 3.5 or higher
+   - NVIDIA driver installed by your hardware vendor
+   - No additional runtime packages required - everything is bundled
+
+ Installation location: /opt/vai-llama
+
+ Usage example:
+   llama-cli --model path/to/model.gguf --temp 0.7
+
+ License: MIT

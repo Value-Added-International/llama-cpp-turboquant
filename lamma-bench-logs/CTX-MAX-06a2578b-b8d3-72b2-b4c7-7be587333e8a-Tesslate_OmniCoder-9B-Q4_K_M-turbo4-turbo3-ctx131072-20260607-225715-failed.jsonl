@@ -1,0 +1,30 @@
+{"event": "run_start", "backend": "cuda", "log_tag": "CTX-MAX", "ts": 1780840635.612098, "model": "Tesslate_OmniCoder-9B-Q4_K_M", "ctk": "turbo4", "ctv": "turbo3", "n_ctx": 131072, "n_prompt": 130880, "n_gen": 64, "run_uuid": "06a2578b-b8d3-72b2-b4c7-7be587333e8a", "vram_free_mib": 7198}
+{"event": "cmd", "backend": "cuda", "log_tag": "CTX-MAX", "ts": 1780840635.6136584, "cmd": "/home/none/git/llama-cpp-turboquant/build-x64-linux-cuda-nvidia-RTX4060-release/bin/llama-completion -m /mnt/512_ssd_internal/vai-llm-tei/llm-models/bartowski/Tesslate_OmniCoder-9B-Q4_K_M.gguf -ngl 32 -sm layer -fa on -nkvo -ctk turbo4 -ctv turbo3 -c 131072 -f /tmp/ctx_max_prompt_j69jkyyo.txt -n 64 -b 2048 -ub 512 --perf"}
+{"event": "vram_sample", "backend": "cuda", "log_tag": "CTX-MAX", "ts": 1780840635.6300735, "vram_used_mib": 856, "vram_free_mib": 7198, "vram_total_mib": 8188}
+{"event": "vram_sample", "backend": "cuda", "log_tag": "CTX-MAX", "ts": 1780840640.6528058, "vram_used_mib": 955, "vram_free_mib": 7099, "vram_total_mib": 8188}
+{"event": "vram_sample", "backend": "cuda", "log_tag": "CTX-MAX", "ts": 1780840645.6771948, "vram_used_mib": 1019, "vram_free_mib": 7035, "vram_total_mib": 8188}
+{"event": "output_line", "backend": "cuda", "log_tag": "CTX-MAX", "ts": 1780840646.0098348, "line": "0.00.075.938 I main: llama backend init"}
+{"event": "output_line", "backend": "cuda", "log_tag": "CTX-MAX", "ts": 1780840646.0100412, "line": "0.00.075.944 I main: load the model and apply lora adapter, if any"}
+{"event": "output_line", "backend": "cuda", "log_tag": "CTX-MAX", "ts": 1780840646.0100923, "line": "0.00.075.960 I common_init_result: fitting params to device memory ..."}
+{"event": "output_line", "backend": "cuda", "log_tag": "CTX-MAX", "ts": 1780840646.0101192, "line": "0.00.075.960 I common_init_result: (for bugs during this step try to reproduce them with -fit off, or provide --verbose logs if the bug only occurs with -fit on)"}
+{"event": "output_line", "backend": "cuda", "log_tag": "CTX-MAX", "ts": 1780840646.0101445, "line": "0.08.583.228 W llama_context: n_ctx_seq (131072) < n_ctx_train (262144) -- the full capacity of the model will not be utilized"}
+{"event": "output_line", "backend": "cuda", "log_tag": "CTX-MAX", "ts": 1780840646.0101712, "line": "0.09.119.432 W common_init_from_params: warming up the model with an empty run - please wait ... (--no-warmup to disable)"}
+{"event": "output_line", "backend": "cuda", "log_tag": "CTX-MAX", "ts": 1780840646.0101957, "line": "0.09.455.569 I main: llama threadpool init, n_threads = 8"}
+{"event": "output_line", "backend": "cuda", "log_tag": "CTX-MAX", "ts": 1780840646.0102224, "line": "0.09.455.582 I main: chat template is available, enabling conversation mode (disable it with -no-cnv)"}
+{"event": "output_line", "backend": "cuda", "log_tag": "CTX-MAX", "ts": 1780840646.010248, "line": "0.09.455.582 W *** User-specified prompt will pre-start conversation, did you mean to set --system-prompt (-sys) instead?"}
+{"event": "output_line", "backend": "cuda", "log_tag": "CTX-MAX", "ts": 1780840646.0102732, "line": "0.09.457.353 I main: chat template example:"}
+{"event": "output_line", "backend": "cuda", "log_tag": "CTX-MAX", "ts": 1780840646.0102975, "line": "<|im_start|>system"}
+{"event": "output_line", "backend": "cuda", "log_tag": "CTX-MAX", "ts": 1780840646.010321, "line": "You are a helpful assistant<|im_end|>"}
+{"event": "output_line", "backend": "cuda", "log_tag": "CTX-MAX", "ts": 1780840646.0103445, "line": "<|im_start|>user"}
+{"event": "output_line", "backend": "cuda", "log_tag": "CTX-MAX", "ts": 1780840646.0103674, "line": "Hello<|im_end|>"}
+{"event": "output_line", "backend": "cuda", "log_tag": "CTX-MAX", "ts": 1780840646.0103903, "line": "<|im_start|>assistant"}
+{"event": "output_line", "backend": "cuda", "log_tag": "CTX-MAX", "ts": 1780840646.0104125, "line": "Hi there<|im_end|>"}
+{"event": "output_line", "backend": "cuda", "log_tag": "CTX-MAX", "ts": 1780840646.0104353, "line": "<|im_start|>user"}
+{"event": "output_line", "backend": "cuda", "log_tag": "CTX-MAX", "ts": 1780840646.0104592, "line": "How are you?<|im_end|>"}
+{"event": "output_line", "backend": "cuda", "log_tag": "CTX-MAX", "ts": 1780840646.0104923, "line": "<|im_start|>assistant"}
+{"event": "output_line", "backend": "cuda", "log_tag": "CTX-MAX", "ts": 1780840646.010518, "line": ""}
+{"event": "output_line", "backend": "cuda", "log_tag": "CTX-MAX", "ts": 1780840646.0105407, "line": "0.09.457.354 I "}
+{"event": "output_line", "backend": "cuda", "log_tag": "CTX-MAX", "ts": 1780840646.0105639, "line": "0.09.457.505 I system_info: n_threads = 8 (n_threads_batch = 8) / 16 | CUDA : ARCHS = 860,890 | USE_GRAPHS = 1 | PEER_MAX_BATCH_SIZE = 128 | FA_ALL_QUANTS = 1 | CPU : SSE3 = 1 | SSSE3 = 1 | AVX = 1 | AVX2 = 1 | F16C = 1 | FMA = 1 | BMI2 = 1 | AVX512 = 1 | AVX512_VBMI = 1 | AVX512_VNNI = 1 | AVX512_BF16 = 1 | LLAMAFILE = 1 | OPENMP = 1 | REPACK = 1 | "}
+{"event": "output_line", "backend": "cuda", "log_tag": "CTX-MAX", "ts": 1780840646.0105925, "line": "0.09.457.506 I "}
+{"event": "output_line", "backend": "cuda", "log_tag": "CTX-MAX", "ts": 1780840646.010619, "line": "0.09.551.429 E main: prompt is too long (190567 tokens, max 131068)"}
+{"event": "run_end", "backend": "cuda", "log_tag": "CTX-MAX", "ts": 1780840646.0108428, "success": false, "duration_s": 10, "peak_vram_mib": 1019, "oom": false, "status": "failed"}

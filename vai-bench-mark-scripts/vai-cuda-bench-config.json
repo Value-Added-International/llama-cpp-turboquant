@@ -1,0 +1,96 @@
+{
+  "_comment": "VAI llama-bench CUDA-ONLY configuration — RTX 4060 8GiB — 2026-06-07",
+  "_target": "NVIDIA RTX 4060 8GiB GDDR6 — CUDA backend only — code-completion / tool-use / MCP workloads",
+  "_context_strategy": "KV quantization is the primary lever for context maximization on 8GiB VRAM. turbo4/turbo4 enables 32K ctx; q8_0/q8_0 caps at 16K; q4_0/q4_0 matches turbo4 at 32K but lower quality. MTP model (Q6_K, 7.1GiB) requires NGL≤28 to leave room for KV cache.",
+
+  "bench_params": {
+    "kv_types": [
+      {"ctk": "turbo4", "ctv": "turbo4",
+       "_note": "~4-bit symmetric — maximizes context window; primary target for code-completion evals"},
+      {"ctk": "q8_0",   "ctv": "q8_0",
+       "_note": "8-bit standard — quality baseline; limits ctx to ~16K on 8GiB"},
+      {"ctk": "q4_0",   "ctv": "turbo4",
+       "_note": "4-bit K + turbo4 V — asymmetric; K is access-critical, V can be compressed harder"},
+      {"ctk": "q4_0",   "ctv": "q4_0",
+       "_note": "4-bit standard symmetric — maximum context, minimum KV quality floor"}
+    ],
+    "prompts":    [512, 1024, 2048, 4096, 8192, 16384],
+    "_prompts_note": "512 and 1024 included — CUDA has no KV_max OOB restriction (ROCm-only issue). 16384 validates large-context code-completion pipeline.",
+    "n_gen":      256,
+    "_n_gen_note": "256 tokens simulates a typical code-completion response (function body, short block). Keeps each run bounded.",
+    "flash_attn": 1,
+    "kv_offload": 0,
+    "_kv_offload_note": "-nkvo 0 = no_kv_offload=false = KV cache stays on VRAM (dGPU). Required for context-maximization testing.",
+    "repetitions": 3
+  },
+
+  "backends": {
+    "cuda": {
+      "binary":       "/home/none/git/llama-cpp-turboquant/build-x64-linux-cuda-nvidia-RTX4060-release/bin/llama-bench",
+      "enabled":      true,
+      "split_mode":   "layer",
+      "vram_monitor": "nvidia-smi",
+      "_note":        "RTX 4060 8GiB — single dGPU, all layers offloaded where VRAM allows"
+    }
+  },
+
+  "models": [
+    {
+      "name":         "Tesslate_OmniCoder-9B-Q4_K_M",
+      "path":         "/mnt/512_ssd_internal/vai-llm-tei/llm-models/bartowski/Tesslate_OmniCoder-9B-Q4_K_M.gguf",
+      "architecture": "qwen35",
+      "total_layers": 32,
+      "context_max":  262144,
+      "_model_note":  "5.6GiB Q4_K_M — fits fully on 8GiB with KV headroom for 32K ctx at turbo4/turbo4. Code-completion specialist.",
+      "_vram_estimate": "Model ~6.1GiB on VRAM + 10% CUDA overhead = ~6.7GiB; ~1.4GiB free for KV cache",
+      "kv_head_count": 4,
+      "head_dim":      128,
+      "ngl_cuda_candidates": [32, 30, 28, 25, 20],
+      "ctx_candidates": [32768, 16384, 8192, 4096]
+    },
+    {
+      "name":         "Qwen3.5-9B-UD-Q4_K_XL",
+      "path":         "/mnt/512_ssd_internal/vai-llm-tei/llm-models/unsloth/Qwen3.5-9B-UD-Q4_K_XL.gguf",
+      "architecture": "qwen35",
+      "total_layers": 33,
+      "context_max":  262144,
+      "_model_note":  "5.8GiB Q4_K_XL — Unsloth imatrix quant; slightly higher quality than Q4_K_M. Tool-use and MCP server tasks.",
+      "_vram_estimate": "Model ~6.3GiB + overhead; ~1.2GiB free for KV. turbo4/turbo4 fits 32K; q8_0 limited to 16K.",
+      "kv_head_count": 4,
+      "head_dim":      128,
+      "ngl_cuda_candidates": [33, 30, 28, 25, 20],
+      "ctx_candidates": [32768, 16384, 8192, 4096]
+    },
+    {
+      "name":         "Qwopus3.5-9B-Coder-MTP-Q6_K",
+      "path":         "/mnt/512_ssd_internal/vai-llm-tei/llm-models/noctrex/Qwopus3.5-9B-Coder-MTP-Q6_K.gguf",
+      "architecture": "qwen35",
+      "total_layers": 33,
+      "context_max":  262144,
+      "_model_note":  "7.1GiB Q6_K MTP model — Multi-Token Prediction head; cannot fully offload on 8GiB. NGL≤28 required to leave KV cache room. Tests MTP throughput on code-completion.",
+      "_vram_estimate": "NGL=28: ~6.8GiB weights on GPU; ~300 MiB free — enough for turbo4/turbo4 at 8K-16K ctx. q8_0 may OOM at 16K.",
+      "_mtp_note":    "MTP (speculative multi-token) head is loaded alongside main model; factor into VRAM budget.",
+      "is_mtp":       true,
+      "mtp_n_max":    "0,2",
+      "mtp_draft_ctk": "q4_0",
+      "mtp_draft_ctv": "q4_0",
+      "_mtp_flags_note": "--mtp-n-max 0,2 benchmarks baseline (0) vs 2-token speculative decoding. -ctkd/-ctvd q4_0 keeps draft KV cache small to fit within the already-tight VRAM budget at NGL=28.",
+      "kv_head_count": 4,
+      "head_dim":      128,
+      "ngl_cuda_candidates": [28, 25, 20, 15],
+      "ctx_candidates": [16384, 8192, 4096]
+    }
+  ],
+
+  "logging": {
+    "log_dir":               "/home/none/git/llama-cpp-turboquant/lamma-bench-logs/cuda-only",
+    "vram_sample_interval_s": 5,
+    "_log_note":             "Log filenames are tagged CUDA-ONLY. Separate subdir isolates CUDA runs from multi-backend logs."
+  },
+
+  "watchdog": {
+    "timeout_s":   1800,
+    "max_retries": 2,
+    "_note":       "1800s (30 min) per run; MTP model at large ctx may be slow — increase if needed"
+  }
+}

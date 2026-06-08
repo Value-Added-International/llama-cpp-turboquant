@@ -1,0 +1,346 @@
+{"event": "run_start", "ts": 1780807351.9100354, "model": "gemma-4-31B-it-qat", "backend": "vulkan", "ngl": 10, "ctk": "turbo4", "ctv": "turbo4", "cmd": "/home/none/git/llama-cpp-turboquant/build-x64-linux-vulkan-AMD-780-release/bin/llama-bench -m /mnt/512_ssd_internal/vai-llm-tei/llm-models/unsloth/gemma-4-31B-it-qat-UD-Q4_K_XL.gguf -ngl 10 -sm layer -fa 1 -nkvo 0 -ctk turbo4 -ctv turbo4 -p 512,2048,4096,8192 -n 512 -r 3 -o jsonl --progress"}
+{"event": "vram_pre_run", "ts": 1780807351.9847507, "vram_free_mib": 8059, "vram_used_mib": 133, "vram_total_mib": 8192}
+{"event": "attempt_start", "ts": 1780807351.9852917, "attempt": 0, "cmd": "/home/none/git/llama-cpp-turboquant/build-x64-linux-vulkan-AMD-780-release/bin/llama-bench -m /mnt/512_ssd_internal/vai-llm-tei/llm-models/unsloth/gemma-4-31B-it-qat-UD-Q4_K_XL.gguf -ngl 10 -sm layer -fa 1 -nkvo 0 -ctk turbo4 -ctv turbo4 -p 512,2048,4096,8192 -n 512 -r 3 -o jsonl --progress"}
+{"event": "vram_sample", "ts": 1780807352.0611687, "phase": "running", "vram_used_mib": 133, "vram_free_mib": 8059, "vram_total_mib": 8192}
+ggml_vulkan: Found 2 Vulkan devices:
+ggml_vulkan: 0 = AMD Radeon 780M Graphics (RADV PHOENIX) (radv) | uma: 1 | fp16: 1 | bf16: 0 | warp size: 64 | shared memory: 65536 | int dot: 1 | matrix cores: KHR_coopmat
+ggml_vulkan: 1 = NVIDIA GeForce RTX 4060 Laptop GPU (NVIDIA) | uma: 0 | fp16: 1 | bf16: 1 | warp size: 32 | shared memory: 49152 | int dot: 1 | matrix cores: NV_coopmat2
+llama-bench: benchmark 1/5: starting
+{"event": "vram_sample", "ts": 1780807357.1799796, "phase": "running", "vram_used_mib": 133, "vram_free_mib": 8059, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807362.2904513, "phase": "running", "vram_used_mib": 133, "vram_free_mib": 8059, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807367.3914487, "phase": "running", "vram_used_mib": 133, "vram_free_mib": 8059, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807372.5187304, "phase": "running", "vram_used_mib": 133, "vram_free_mib": 8059, "vram_total_mib": 8192}
+llama-bench: benchmark 1/5: warmup prompt run
+{"event": "vram_sample", "ts": 1780807377.6498616, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807382.7532997, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+llama-bench: benchmark 1/5: prompt run 1/3
+{"event": "vram_sample", "ts": 1780807387.8833559, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807392.9745123, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+llama-bench: benchmark 1/5: prompt run 2/3
+{"event": "vram_sample", "ts": 1780807398.0669384, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+llama-bench: benchmark 1/5: prompt run 3/3
+{"event": "vram_sample", "ts": 1780807403.1544359, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"build_commit": "8ef5d3454", "build_number": 9425, "cpu_info": "AMD Ryzen 7 8845HS w/ Radeon 780M Graphics", "gpu_info": "AMD Radeon 780M Graphics (RADV PHOENIX), NVIDIA GeForce RTX 4060 Laptop GPU", "backends": "Vulkan", "model_filename": "/mnt/512_ssd_internal/vai-llm-tei/llm-models/unsloth/gemma-4-31B-it-qat-UD-Q4_K_XL.gguf", "model_type": "gemma4 31B Q4_0", "model_size": 17271834864, "model_n_params": 30697345596, "n_batch": 2048, "n_ubatch": 512, "n_threads": 8, "cpu_mask": "0x0", "cpu_strict": false, "poll": 50, "type_k": "turbo4", "type_v": "turbo4", "n_gpu_layers": 10, "n_cpu_moe": 0, "split_mode": "layer", "main_gpu": 0, "no_kv_offload": false, "flash_attn": true, "devices": "auto", "tensor_split": "0.00", "tensor_buft_overrides": "none", "use_mmap": true, "use_direct_io": false, "embeddings": false, "no_op_offload": 0, "no_host": false, "fit_target": 0, "fit_min_ctx": 0, "mtp_n_max": 0, "type_k_draft": "f16", "type_v_draft": "f16", "n_prompt": 512, "n_gen": 0, "n_depth": 0, "test_time": "2026-06-07T04:42:54Z", "avg_ns": 5839232547, "stddev_ns": 3991257062, "avg_ts": 97.906761, "stddev_ts": 34.581910, "samples_ns": [ 8829367412, 4377043987, 4311286242 ],"samples_ts": [ 57.9883, 116.974, 118.758 ]}
+llama-bench: benchmark 2/5: starting
+llama-bench: benchmark 2/5: warmup prompt run
+{"event": "vram_sample", "ts": 1780807408.2555828, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807413.3347895, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807418.4349573, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+llama-bench: benchmark 2/5: prompt run 1/3
+{"event": "vram_sample", "ts": 1780807423.5261936, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807428.6434882, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807433.734572, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807438.820004, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+llama-bench: benchmark 2/5: prompt run 2/3
+{"event": "vram_sample", "ts": 1780807443.90986, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807448.9991736, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807454.0918221, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+llama-bench: benchmark 2/5: prompt run 3/3
+{"event": "vram_sample", "ts": 1780807459.1957245, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807464.2990994, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807469.3830855, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807474.4721928, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"build_commit": "8ef5d3454", "build_number": 9425, "cpu_info": "AMD Ryzen 7 8845HS w/ Radeon 780M Graphics", "gpu_info": "AMD Radeon 780M Graphics (RADV PHOENIX), NVIDIA GeForce RTX 4060 Laptop GPU", "backends": "Vulkan", "model_filename": "/mnt/512_ssd_internal/vai-llm-tei/llm-models/unsloth/gemma-4-31B-it-qat-UD-Q4_K_XL.gguf", "model_type": "gemma4 31B Q4_0", "model_size": 17271834864, "model_n_params": 30697345596, "n_batch": 2048, "n_ubatch": 512, "n_threads": 8, "cpu_mask": "0x0", "cpu_strict": false, "poll": 50, "type_k": "turbo4", "type_v": "turbo4", "n_gpu_layers": 10, "n_cpu_moe": 0, "split_mode": "layer", "main_gpu": 0, "no_kv_offload": false, "flash_attn": true, "devices": "auto", "tensor_split": "0.00", "tensor_buft_overrides": "none", "use_mmap": true, "use_direct_io": false, "embeddings": false, "no_op_offload": 0, "no_host": false, "fit_target": 0, "fit_min_ctx": 0, "mtp_n_max": 0, "type_k_draft": "f16", "type_v_draft": "f16", "n_prompt": 2048, "n_gen": 0, "n_depth": 0, "test_time": "2026-06-07T04:43:24Z", "avg_ns": 17422782415, "stddev_ns": 101345000, "avg_ts": 117.549889, "stddev_ts": 0.682868, "samples_ns": [ 17406989130, 17330261414, 17531096703 ],"samples_ts": [ 117.654, 118.175, 116.821 ]}
+llama-bench: benchmark 3/5: starting
+llama-bench: benchmark 3/5: warmup prompt run
+{"event": "vram_sample", "ts": 1780807479.5505762, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807484.639841, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807489.7273746, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807494.8248875, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807499.9149837, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807504.997871, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+llama-bench: benchmark 3/5: prompt run 1/3
+{"event": "vram_sample", "ts": 1780807510.073783, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807515.1631515, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807520.2587132, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807525.3492372, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807530.438049, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807535.5239794, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807540.612828, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+llama-bench: benchmark 3/5: prompt run 2/3
+{"event": "vram_sample", "ts": 1780807545.6981921, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807550.7874267, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807555.874834, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807560.9684405, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807566.0475223, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807571.1354754, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807576.2305615, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+llama-bench: benchmark 3/5: prompt run 3/3
+{"event": "vram_sample", "ts": 1780807581.3225913, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807586.4114623, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807591.5145724, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807596.6066327, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807601.7012222, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807606.8017733, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807611.90332, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"build_commit": "8ef5d3454", "build_number": 9425, "cpu_info": "AMD Ryzen 7 8845HS w/ Radeon 780M Graphics", "gpu_info": "AMD Radeon 780M Graphics (RADV PHOENIX), NVIDIA GeForce RTX 4060 Laptop GPU", "backends": "Vulkan", "model_filename": "/mnt/512_ssd_internal/vai-llm-tei/llm-models/unsloth/gemma-4-31B-it-qat-UD-Q4_K_XL.gguf", "model_type": "gemma4 31B Q4_0", "model_size": 17271834864, "model_n_params": 30697345596, "n_batch": 2048, "n_ubatch": 512, "n_threads": 8, "cpu_mask": "0x0", "cpu_strict": false, "poll": 50, "type_k": "turbo4", "type_v": "turbo4", "n_gpu_layers": 10, "n_cpu_moe": 0, "split_mode": "layer", "main_gpu": 0, "no_kv_offload": false, "flash_attn": true, "devices": "auto", "tensor_split": "0.00", "tensor_buft_overrides": "none", "use_mmap": true, "use_direct_io": false, "embeddings": false, "no_op_offload": 0, "no_host": false, "fit_target": 0, "fit_min_ctx": 0, "mtp_n_max": 0, "type_k_draft": "f16", "type_v_draft": "f16", "n_prompt": 4096, "n_gen": 0, "n_depth": 0, "test_time": "2026-06-07T04:44:35Z", "avg_ns": 34748866074, "stddev_ns": 74634504, "avg_ts": 117.874713, "stddev_ts": 0.253257, "samples_ns": [ 34819376106, 34670698053, 34756524064 ],"samples_ts": [ 117.636, 118.14, 117.848 ]}
+llama-bench: benchmark 4/5: starting
+llama-bench: benchmark 4/5: warmup prompt run
+{"event": "vram_sample", "ts": 1780807616.9982705, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807622.0933692, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807627.1739469, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807632.264362, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807637.3606, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807642.4594762, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807647.5471988, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807652.6292522, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807657.7302706, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807662.830947, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807667.9200833, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807673.0213795, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807678.11565, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807683.2052925, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+llama-bench: benchmark 4/5: prompt run 1/3
+{"event": "vram_sample", "ts": 1780807688.2920785, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807693.377508, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807698.47465, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807703.5655963, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807708.6551006, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807713.779263, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807718.89195, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807724.0062163, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807729.1037457, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807734.1967793, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807739.2984672, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807744.4032462, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807749.5068564, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807754.587021, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+llama-bench: benchmark 4/5: prompt run 2/3
+{"event": "vram_sample", "ts": 1780807759.6864166, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807764.7881453, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807769.8771951, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807774.9680624, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807780.0519657, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807785.14828, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807790.2410352, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807795.3398962, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807800.4370797, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807805.5301206, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807810.6216836, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807815.7123215, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807820.810202, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+llama-bench: benchmark 4/5: prompt run 3/3
+{"event": "vram_sample", "ts": 1780807825.9195013, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807831.0163293, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807836.117926, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807841.2123907, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807846.315966, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807851.4118927, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807856.5012891, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807861.597751, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807866.6879537, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807871.7719626, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807876.8620982, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807881.9644148, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807887.0528717, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807892.144511, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"build_commit": "8ef5d3454", "build_number": 9425, "cpu_info": "AMD Ryzen 7 8845HS w/ Radeon 780M Graphics", "gpu_info": "AMD Radeon 780M Graphics (RADV PHOENIX), NVIDIA GeForce RTX 4060 Laptop GPU", "backends": "Vulkan", "model_filename": "/mnt/512_ssd_internal/vai-llm-tei/llm-models/unsloth/gemma-4-31B-it-qat-UD-Q4_K_XL.gguf", "model_type": "gemma4 31B Q4_0", "model_size": 17271834864, "model_n_params": 30697345596, "n_batch": 2048, "n_ubatch": 512, "n_threads": 8, "cpu_mask": "0x0", "cpu_strict": false, "poll": 50, "type_k": "turbo4", "type_v": "turbo4", "n_gpu_layers": 10, "n_cpu_moe": 0, "split_mode": "layer", "main_gpu": 0, "no_kv_offload": false, "flash_attn": true, "devices": "auto", "tensor_split": "0.00", "tensor_buft_overrides": "none", "use_mmap": true, "use_direct_io": false, "embeddings": false, "no_op_offload": 0, "no_host": false, "fit_target": 0, "fit_min_ctx": 0, "mtp_n_max": 0, "type_k_draft": "f16", "type_v_draft": "f16", "n_prompt": 8192, "n_gen": 0, "n_depth": 0, "test_time": "2026-06-07T04:46:54Z", "avg_ns": 70197831346, "stddev_ns": 113091446, "avg_ts": 116.698964, "stddev_ts": 0.187949, "samples_ns": [ 70183411232, 70317440604, 70092642204 ],"samples_ts": [ 116.723, 116.5, 116.874 ]}
+llama-bench: benchmark 5/5: starting
+llama-bench: benchmark 5/5: warmup generation run
+llama-bench: benchmark 5/5: generation run 1/3
+{"event": "vram_sample", "ts": 1780807897.5670924, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807903.0016932, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807908.387057, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807913.8495815, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807919.2277153, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807924.449617, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807929.7993608, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807935.2761009, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807940.6966493, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807946.0610406, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807951.361372, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807956.7068763, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807962.2354078, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807967.778816, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807973.2359912, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807978.4439998, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807983.7887535, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807989.1423695, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807994.4681149, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780807999.8525739, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808005.2840598, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808010.5611186, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808016.0264938, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808021.4564347, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808026.847341, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808032.1951656, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808037.6351576, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808042.992719, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808048.290929, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808053.7224813, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808059.067481, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808064.346314, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808069.6708133, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808075.0182643, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808080.4068913, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808085.6708581, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808091.0926042, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808096.3756235, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808101.7186658, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808107.1380007, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808112.5467856, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808117.9098384, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808123.2880707, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808128.4843848, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808133.8796914, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808139.22614, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808144.6325557, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808150.0236611, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808155.438256, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808160.7991338, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808166.134508, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808171.4792275, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808176.7947161, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808182.1932135, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808187.5394366, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808192.6133418, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808197.9590967, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808203.2222185, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808208.5041177, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808213.9277153, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808219.2260482, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808224.4560568, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808229.7588496, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808235.0370083, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808240.3971195, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808245.7418065, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808251.019131, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+llama-bench: benchmark 5/5: generation run 2/3
+{"event": "vram_sample", "ts": 1780808256.395234, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808261.7964501, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808267.2771583, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808272.7179732, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808278.1742446, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808283.5289445, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808288.9402645, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808294.2527907, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808299.7103033, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808305.0089917, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808310.382586, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808315.7787814, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808321.1057162, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808326.4214666, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808331.7203727, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808337.2120686, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808342.5041215, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808347.8692834, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808353.2666614, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808358.65429, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808364.0945725, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808369.5525532, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808375.0939932, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808380.4909067, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808385.753098, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808391.1931922, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808396.483501, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808401.868839, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808407.2304816, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808412.6495855, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808418.1181333, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808423.4421198, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808428.7309396, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808434.0323021, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808439.4524682, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808444.5564609, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808449.9410558, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808455.3971767, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808460.654843, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808466.0509636, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808471.464028, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808476.7817452, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808482.106778, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808487.5204327, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808492.9267955, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808498.3114865, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808503.7648041, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808508.9731743, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808514.3042133, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808519.7418392, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808525.1841023, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808530.5898366, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808535.953273, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808541.2166169, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808546.547799, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808551.9334333, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808557.1859386, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808562.5647228, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808567.9246037, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808573.2716925, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808578.6698494, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808584.0373054, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808589.451508, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808594.828504, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808600.186988, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808605.5879343, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+llama-bench: benchmark 5/5: generation run 3/3
+{"event": "vram_sample", "ts": 1780808611.0845373, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808616.5088294, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808621.9606867, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808627.4768558, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808632.6690803, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808637.9486654, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808643.5528784, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808649.0269215, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808654.2423353, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808659.725698, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808664.965854, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808670.3245206, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808675.7731707, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808680.844537, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808686.0444293, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808691.3600535, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808696.7365937, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808702.1978316, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808707.358713, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808712.7746625, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808717.9574203, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808723.4349313, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808728.9266121, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808734.0053282, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808739.4444883, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808744.8496575, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808750.1570637, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808755.4501216, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808760.6268957, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808765.869289, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808771.1710997, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808776.6309547, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808782.128177, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808787.5794024, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808792.9615116, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808798.2892249, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808803.6162379, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808808.9619076, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808814.349638, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808819.7937, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808825.2540643, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808830.5840263, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808836.0023274, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808841.3720956, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808846.724516, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808852.0594301, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808857.455808, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808862.8167853, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808868.1633296, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808873.48831, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808878.8731236, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808884.214977, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808889.524436, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808894.7657194, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808899.9105816, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808905.2163818, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808910.5645356, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808915.9162683, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808921.3401225, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808926.6874774, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808931.851722, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808937.0498827, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808942.4621494, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808947.8269768, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808953.1865509, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"event": "vram_sample", "ts": 1780808958.4590333, "phase": "running", "vram_used_mib": 134, "vram_free_mib": 8058, "vram_total_mib": 8192}
+{"build_commit": "8ef5d3454", "build_number": 9425, "cpu_info": "AMD Ryzen 7 8845HS w/ Radeon 780M Graphics", "gpu_info": "AMD Radeon 780M Graphics (RADV PHOENIX), NVIDIA GeForce RTX 4060 Laptop GPU", "backends": "Vulkan", "model_filename": "/mnt/512_ssd_internal/vai-llm-tei/llm-models/unsloth/gemma-4-31B-it-qat-UD-Q4_K_XL.gguf", "model_type": "gemma4 31B Q4_0", "model_size": 17271834864, "model_n_params": 30697345596, "n_batch": 2048, "n_ubatch": 512, "n_threads": 8, "cpu_mask": "0x0", "cpu_strict": false, "poll": 50, "type_k": "turbo4", "type_v": "turbo4", "n_gpu_layers": 10, "n_cpu_moe": 0, "split_mode": "layer", "main_gpu": 0, "no_kv_offload": false, "flash_attn": true, "devices": "auto", "tensor_split": "0.00", "tensor_buft_overrides": "none", "use_mmap": true, "use_direct_io": false, "embeddings": false, "no_op_offload": 0, "no_host": false, "fit_target": 0, "fit_min_ctx": 0, "mtp_n_max": 0, "type_k_draft": "f16", "type_v_draft": "f16", "n_prompt": 0, "n_gen": 512, "n_depth": 0, "test_time": "2026-06-07T04:51:35Z", "avg_ns": 354667373281, "stddev_ns": 1108684139, "avg_ts": 1.443616, "stddev_ts": 0.004507, "samples_ns": [ 355898617322, 354355409617, 353748092906 ],"samples_ts": [ 1.43861, 1.44488, 1.44736 ]}
+{"event": "attempt_success", "ts": 1780808962.1433709, "attempt": 0, "duration_s": 1610}
+{"event": "vram_post_run", "ts": 1780808962.222255, "vram_free_mib": 8059, "vram_used_mib": 133, "vram_total_mib": 8192}
+{"event": "run_end", "ts": 1780808962.2223904, "success": true, "duration_s": 1610, "peak_vram_mib": 134}
+{"event": "run_perf_summary", "ts": 1780808962.222565, "peak_vram_mib": 134, "results": [{"type": "prompt", "n_prompt": 512, "avg_ts": 97.906761, "stddev_ts": 34.58191, "ctk": "turbo4", "ctv": "turbo4"}, {"type": "prompt", "n_prompt": 2048, "avg_ts": 117.549889, "stddev_ts": 0.682868, "ctk": "turbo4", "ctv": "turbo4"}, {"type": "prompt", "n_prompt": 4096, "avg_ts": 117.874713, "stddev_ts": 0.253257, "ctk": "turbo4", "ctv": "turbo4"}, {"type": "prompt", "n_prompt": 8192, "avg_ts": 116.698964, "stddev_ts": 0.187949, "ctk": "turbo4", "ctv": "turbo4"}, {"type": "gen", "n_gen": 512, "avg_ts": 1.443616, "stddev_ts": 0.004507, "ctk": "turbo4", "ctv": "turbo4"}]}

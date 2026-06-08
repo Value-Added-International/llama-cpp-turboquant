@@ -1,0 +1,84 @@
+{"event": "run_start", "ts": 1780798891.5513592, "model": "gemma-4-12B-it-qat", "backend": "cuda", "ngl": 40, "ctk": "turbo3", "ctv": "turbo3", "cmd": "/home/none/git/llama-cpp-turboquant/build-x64-linux-cuda-nvidia-RTX4060-release/bin/llama-bench -m /mnt/512_ssd_internal/vai-llm-tei/llm-models/unsloth/gemma-4-12B-it-qat-UD-Q4_K_XL.gguf -ngl 40 -sm layer -fa 1 -nkvo 0 -ctk turbo3 -ctv turbo3 -p 512,2048,4096,8192 -n 512 -r 3 -o jsonl --progress"}
+{"event": "vram_pre_run", "ts": 1780798891.5674107, "vram_free_mib": 7061, "vram_used_mib": 994, "vram_total_mib": 8188}
+{"event": "attempt_start", "ts": 1780798891.5677269, "attempt": 0, "cmd": "/home/none/git/llama-cpp-turboquant/build-x64-linux-cuda-nvidia-RTX4060-release/bin/llama-bench -m /mnt/512_ssd_internal/vai-llm-tei/llm-models/unsloth/gemma-4-12B-it-qat-UD-Q4_K_XL.gguf -ngl 40 -sm layer -fa 1 -nkvo 0 -ctk turbo3 -ctv turbo3 -p 512,2048,4096,8192 -n 512 -r 3 -o jsonl --progress"}
+{"event": "vram_sample", "ts": 1780798891.5832398, "phase": "running", "vram_used_mib": 994, "vram_free_mib": 7061, "vram_total_mib": 8188}
+ggml_cuda_init: found 1 CUDA devices (Total VRAM: 8053 MiB):
+  Device 0: NVIDIA GeForce RTX 4060 Laptop GPU, compute capability 8.9, VMM: yes, VRAM: 8053 MiB
+llama-bench: benchmark 1/5: starting
+llama-bench: benchmark 1/5: warmup prompt run
+llama-bench: benchmark 1/5: prompt run 1/3
+llama-bench: benchmark 1/5: prompt run 2/3
+llama-bench: benchmark 1/5: prompt run 3/3
+{"build_commit": "8ef5d3454", "build_number": 9425, "cpu_info": "AMD Ryzen 7 8845HS w/ Radeon 780M Graphics", "gpu_info": "NVIDIA GeForce RTX 4060 Laptop GPU", "backends": "CUDA", "model_filename": "/mnt/512_ssd_internal/vai-llm-tei/llm-models/unsloth/gemma-4-12B-it-qat-UD-Q4_K_XL.gguf", "model_type": "gemma4 ?B Q4_0", "model_size": 6700531904, "model_n_params": 11907350576, "n_batch": 2048, "n_ubatch": 512, "n_threads": 8, "cpu_mask": "0x0", "cpu_strict": false, "poll": 50, "type_k": "turbo3", "type_v": "turbo3", "n_gpu_layers": 40, "n_cpu_moe": 0, "split_mode": "layer", "main_gpu": 0, "no_kv_offload": false, "flash_attn": true, "devices": "auto", "tensor_split": "0.00", "tensor_buft_overrides": "none", "use_mmap": true, "use_direct_io": false, "embeddings": false, "no_op_offload": 0, "no_host": false, "fit_target": 0, "fit_min_ctx": 0, "mtp_n_max": 0, "type_k_draft": "f16", "type_v_draft": "f16", "n_prompt": 512, "n_gen": 0, "n_depth": 0, "test_time": "2026-06-07T02:21:33Z", "avg_ns": 730623784, "stddev_ns": 62968451, "avg_ts": 704.107734, "stddev_ts": 58.086595, "samples_ns": [ 802612618, 703474159, 685784577 ],"samples_ts": [ 637.917, 727.816, 746.59 ]}
+llama-bench: benchmark 2/5: starting
+llama-bench: benchmark 2/5: warmup prompt run
+{"event": "vram_sample", "ts": 1780798896.599617, "phase": "running", "vram_used_mib": 7036, "vram_free_mib": 1019, "vram_total_mib": 8188}
+llama-bench: benchmark 2/5: prompt run 1/3
+{"event": "vram_sample", "ts": 1780798901.6172807, "phase": "running", "vram_used_mib": 7042, "vram_free_mib": 1013, "vram_total_mib": 8188}
+llama-bench: benchmark 2/5: prompt run 2/3
+llama-bench: benchmark 2/5: prompt run 3/3
+{"event": "vram_sample", "ts": 1780798906.634408, "phase": "running", "vram_used_mib": 7042, "vram_free_mib": 1013, "vram_total_mib": 8188}
+{"build_commit": "8ef5d3454", "build_number": 9425, "cpu_info": "AMD Ryzen 7 8845HS w/ Radeon 780M Graphics", "gpu_info": "NVIDIA GeForce RTX 4060 Laptop GPU", "backends": "CUDA", "model_filename": "/mnt/512_ssd_internal/vai-llm-tei/llm-models/unsloth/gemma-4-12B-it-qat-UD-Q4_K_XL.gguf", "model_type": "gemma4 ?B Q4_0", "model_size": 6700531904, "model_n_params": 11907350576, "n_batch": 2048, "n_ubatch": 512, "n_threads": 8, "cpu_mask": "0x0", "cpu_strict": false, "poll": 50, "type_k": "turbo3", "type_v": "turbo3", "n_gpu_layers": 40, "n_cpu_moe": 0, "split_mode": "layer", "main_gpu": 0, "no_kv_offload": false, "flash_attn": true, "devices": "auto", "tensor_split": "0.00", "tensor_buft_overrides": "none", "use_mmap": true, "use_direct_io": false, "embeddings": false, "no_op_offload": 0, "no_host": false, "fit_target": 0, "fit_min_ctx": 0, "mtp_n_max": 0, "type_k_draft": "f16", "type_v_draft": "f16", "n_prompt": 2048, "n_gen": 0, "n_depth": 0, "test_time": "2026-06-07T02:21:36Z", "avg_ns": 2816271069, "stddev_ns": 22729919, "avg_ts": 727.234199, "stddev_ts": 5.849412, "samples_ns": [ 2797984940, 2841719248, 2809109021 ],"samples_ts": [ 731.955, 720.69, 729.057 ]}
+llama-bench: benchmark 3/5: starting
+llama-bench: benchmark 3/5: warmup prompt run
+{"event": "vram_sample", "ts": 1780798911.6514502, "phase": "running", "vram_used_mib": 7048, "vram_free_mib": 1007, "vram_total_mib": 8188}
+llama-bench: benchmark 3/5: prompt run 1/3
+{"event": "vram_sample", "ts": 1780798916.6678946, "phase": "running", "vram_used_mib": 7048, "vram_free_mib": 1007, "vram_total_mib": 8188}
+llama-bench: benchmark 3/5: prompt run 2/3
+{"event": "vram_sample", "ts": 1780798921.6845074, "phase": "running", "vram_used_mib": 7048, "vram_free_mib": 1007, "vram_total_mib": 8188}
+llama-bench: benchmark 3/5: prompt run 3/3
+{"event": "vram_sample", "ts": 1780798926.7014763, "phase": "running", "vram_used_mib": 7048, "vram_free_mib": 1007, "vram_total_mib": 8188}
+{"build_commit": "8ef5d3454", "build_number": 9425, "cpu_info": "AMD Ryzen 7 8845HS w/ Radeon 780M Graphics", "gpu_info": "NVIDIA GeForce RTX 4060 Laptop GPU", "backends": "CUDA", "model_filename": "/mnt/512_ssd_internal/vai-llm-tei/llm-models/unsloth/gemma-4-12B-it-qat-UD-Q4_K_XL.gguf", "model_type": "gemma4 ?B Q4_0", "model_size": 6700531904, "model_n_params": 11907350576, "n_batch": 2048, "n_ubatch": 512, "n_threads": 8, "cpu_mask": "0x0", "cpu_strict": false, "poll": 50, "type_k": "turbo3", "type_v": "turbo3", "n_gpu_layers": 40, "n_cpu_moe": 0, "split_mode": "layer", "main_gpu": 0, "no_kv_offload": false, "flash_attn": true, "devices": "auto", "tensor_split": "0.00", "tensor_buft_overrides": "none", "use_mmap": true, "use_direct_io": false, "embeddings": false, "no_op_offload": 0, "no_host": false, "fit_target": 0, "fit_min_ctx": 0, "mtp_n_max": 0, "type_k_draft": "f16", "type_v_draft": "f16", "n_prompt": 4096, "n_gen": 0, "n_depth": 0, "test_time": "2026-06-07T02:21:47Z", "avg_ns": 5763514837, "stddev_ns": 80343198, "avg_ts": 710.770254, "stddev_ts": 9.986598, "samples_ns": [ 5670991560, 5803893283, 5815659668 ],"samples_ts": [ 722.272, 705.733, 704.305 ]}
+llama-bench: benchmark 4/5: starting
+llama-bench: benchmark 4/5: warmup prompt run
+{"event": "vram_sample", "ts": 1780798931.7175188, "phase": "running", "vram_used_mib": 7062, "vram_free_mib": 993, "vram_total_mib": 8188}
+{"event": "vram_sample", "ts": 1780798936.7390046, "phase": "running", "vram_used_mib": 7079, "vram_free_mib": 975, "vram_total_mib": 8188}
+{"event": "vram_sample", "ts": 1780798941.761155, "phase": "running", "vram_used_mib": 7083, "vram_free_mib": 971, "vram_total_mib": 8188}
+llama-bench: benchmark 4/5: prompt run 1/3
+{"event": "vram_sample", "ts": 1780798946.7904398, "phase": "running", "vram_used_mib": 7086, "vram_free_mib": 968, "vram_total_mib": 8188}
+{"event": "vram_sample", "ts": 1780798951.813368, "phase": "running", "vram_used_mib": 7086, "vram_free_mib": 968, "vram_total_mib": 8188}
+llama-bench: benchmark 4/5: prompt run 2/3
+{"event": "vram_sample", "ts": 1780798956.8312037, "phase": "running", "vram_used_mib": 7083, "vram_free_mib": 971, "vram_total_mib": 8188}
+{"event": "vram_sample", "ts": 1780798961.853419, "phase": "running", "vram_used_mib": 7083, "vram_free_mib": 971, "vram_total_mib": 8188}
+{"event": "vram_sample", "ts": 1780798966.869882, "phase": "running", "vram_used_mib": 7084, "vram_free_mib": 970, "vram_total_mib": 8188}
+llama-bench: benchmark 4/5: prompt run 3/3
+{"event": "vram_sample", "ts": 1780798971.8858576, "phase": "running", "vram_used_mib": 7069, "vram_free_mib": 985, "vram_total_mib": 8188}
+{"event": "vram_sample", "ts": 1780798976.90944, "phase": "running", "vram_used_mib": 7083, "vram_free_mib": 971, "vram_total_mib": 8188}
+{"build_commit": "8ef5d3454", "build_number": 9425, "cpu_info": "AMD Ryzen 7 8845HS w/ Radeon 780M Graphics", "gpu_info": "NVIDIA GeForce RTX 4060 Laptop GPU", "backends": "CUDA", "model_filename": "/mnt/512_ssd_internal/vai-llm-tei/llm-models/unsloth/gemma-4-12B-it-qat-UD-Q4_K_XL.gguf", "model_type": "gemma4 ?B Q4_0", "model_size": 6700531904, "model_n_params": 11907350576, "n_batch": 2048, "n_ubatch": 512, "n_threads": 8, "cpu_mask": "0x0", "cpu_strict": false, "poll": 50, "type_k": "turbo3", "type_v": "turbo3", "n_gpu_layers": 40, "n_cpu_moe": 0, "split_mode": "layer", "main_gpu": 0, "no_kv_offload": false, "flash_attn": true, "devices": "auto", "tensor_split": "0.00", "tensor_buft_overrides": "none", "use_mmap": true, "use_direct_io": false, "embeddings": false, "no_op_offload": 0, "no_host": false, "fit_target": 0, "fit_min_ctx": 0, "mtp_n_max": 0, "type_k_draft": "f16", "type_v_draft": "f16", "n_prompt": 8192, "n_gen": 0, "n_depth": 0, "test_time": "2026-06-07T02:22:10Z", "avg_ns": 12167343613, "stddev_ns": 112125865, "avg_ts": 673.315526, "stddev_ts": 6.172042, "samples_ns": [ 12296784737, 12105061121, 12100184982 ],"samples_ts": [ 666.19, 676.742, 677.014 ]}
+llama-bench: benchmark 5/5: starting
+llama-bench: benchmark 5/5: warmup generation run
+llama-bench: benchmark 5/5: generation run 1/3
+{"event": "vram_sample", "ts": 1780798981.9377718, "phase": "running", "vram_used_mib": 6995, "vram_free_mib": 1059, "vram_total_mib": 8188}
+{"event": "vram_sample", "ts": 1780798986.9629502, "phase": "running", "vram_used_mib": 6995, "vram_free_mib": 1059, "vram_total_mib": 8188}
+{"event": "vram_sample", "ts": 1780798991.9946926, "phase": "running", "vram_used_mib": 6981, "vram_free_mib": 1073, "vram_total_mib": 8188}
+{"event": "vram_sample", "ts": 1780798997.0361168, "phase": "running", "vram_used_mib": 6995, "vram_free_mib": 1059, "vram_total_mib": 8188}
+{"event": "vram_sample", "ts": 1780799002.0789082, "phase": "running", "vram_used_mib": 6995, "vram_free_mib": 1059, "vram_total_mib": 8188}
+{"event": "vram_sample", "ts": 1780799007.1107235, "phase": "running", "vram_used_mib": 6995, "vram_free_mib": 1059, "vram_total_mib": 8188}
+{"event": "vram_sample", "ts": 1780799012.1462119, "phase": "running", "vram_used_mib": 6995, "vram_free_mib": 1059, "vram_total_mib": 8188}
+{"event": "vram_sample", "ts": 1780799017.1897101, "phase": "running", "vram_used_mib": 6995, "vram_free_mib": 1059, "vram_total_mib": 8188}
+{"event": "vram_sample", "ts": 1780799022.23082, "phase": "running", "vram_used_mib": 6995, "vram_free_mib": 1059, "vram_total_mib": 8188}
+llama-bench: benchmark 5/5: generation run 2/3
+{"event": "vram_sample", "ts": 1780799027.2603965, "phase": "running", "vram_used_mib": 6995, "vram_free_mib": 1059, "vram_total_mib": 8188}
+{"event": "vram_sample", "ts": 1780799032.2847989, "phase": "running", "vram_used_mib": 6995, "vram_free_mib": 1059, "vram_total_mib": 8188}
+{"event": "vram_sample", "ts": 1780799037.3224356, "phase": "running", "vram_used_mib": 6995, "vram_free_mib": 1059, "vram_total_mib": 8188}
+{"event": "vram_sample", "ts": 1780799042.3476992, "phase": "running", "vram_used_mib": 6995, "vram_free_mib": 1059, "vram_total_mib": 8188}
+{"event": "vram_sample", "ts": 1780799047.389899, "phase": "running", "vram_used_mib": 6995, "vram_free_mib": 1059, "vram_total_mib": 8188}
+{"event": "vram_sample", "ts": 1780799052.4117622, "phase": "running", "vram_used_mib": 6995, "vram_free_mib": 1059, "vram_total_mib": 8188}
+{"event": "vram_sample", "ts": 1780799057.4303844, "phase": "running", "vram_used_mib": 6995, "vram_free_mib": 1059, "vram_total_mib": 8188}
+{"event": "vram_sample", "ts": 1780799062.4547145, "phase": "running", "vram_used_mib": 6995, "vram_free_mib": 1059, "vram_total_mib": 8188}
+{"event": "vram_sample", "ts": 1780799067.493852, "phase": "running", "vram_used_mib": 6995, "vram_free_mib": 1059, "vram_total_mib": 8188}
+llama-bench: benchmark 5/5: generation run 3/3
+{"event": "vram_sample", "ts": 1780799072.510721, "phase": "running", "vram_used_mib": 6995, "vram_free_mib": 1059, "vram_total_mib": 8188}
+{"event": "vram_sample", "ts": 1780799077.5462244, "phase": "running", "vram_used_mib": 6995, "vram_free_mib": 1059, "vram_total_mib": 8188}
+{"event": "vram_sample", "ts": 1780799082.5728705, "phase": "running", "vram_used_mib": 6995, "vram_free_mib": 1059, "vram_total_mib": 8188}
+{"event": "vram_sample", "ts": 1780799087.6168263, "phase": "running", "vram_used_mib": 6981, "vram_free_mib": 1073, "vram_total_mib": 8188}
+{"event": "vram_sample", "ts": 1780799092.6610968, "phase": "running", "vram_used_mib": 6981, "vram_free_mib": 1073, "vram_total_mib": 8188}
+{"event": "vram_sample", "ts": 1780799097.7028432, "phase": "running", "vram_used_mib": 6981, "vram_free_mib": 1073, "vram_total_mib": 8188}
+{"event": "vram_sample", "ts": 1780799102.7461123, "phase": "running", "vram_used_mib": 6981, "vram_free_mib": 1073, "vram_total_mib": 8188}
+{"event": "vram_sample", "ts": 1780799107.7717757, "phase": "running", "vram_used_mib": 6981, "vram_free_mib": 1073, "vram_total_mib": 8188}
+{"event": "vram_sample", "ts": 1780799112.8108172, "phase": "running", "vram_used_mib": 6981, "vram_free_mib": 1073, "vram_total_mib": 8188}
+{"build_commit": "8ef5d3454", "build_number": 9425, "cpu_info": "AMD Ryzen 7 8845HS w/ Radeon 780M Graphics", "gpu_info": "NVIDIA GeForce RTX 4060 Laptop GPU", "backends": "CUDA", "model_filename": "/mnt/512_ssd_internal/vai-llm-tei/llm-models/unsloth/gemma-4-12B-it-qat-UD-Q4_K_XL.gguf", "model_type": "gemma4 ?B Q4_0", "model_size": 6700531904, "model_n_params": 11907350576, "n_batch": 2048, "n_ubatch": 512, "n_threads": 8, "cpu_mask": "0x0", "cpu_strict": false, "poll": 50, "type_k": "turbo3", "type_v": "turbo3", "n_gpu_layers": 40, "n_cpu_moe": 0, "split_mode": "layer", "main_gpu": 0, "no_kv_offload": false, "flash_attn": true, "devices": "auto", "tensor_split": "0.00", "tensor_buft_overrides": "none", "use_mmap": true, "use_direct_io": false, "embeddings": false, "no_op_offload": 0, "no_host": false, "fit_target": 0, "fit_min_ctx": 0, "mtp_n_max": 0, "type_k_draft": "f16", "type_v_draft": "f16", "n_prompt": 0, "n_gen": 512, "n_depth": 0, "test_time": "2026-06-07T02:22:59Z", "avg_ns": 44721638264, "stddev_ns": 113139408, "avg_ts": 11.448646, "stddev_ts": 0.028963, "samples_ns": [ 44720790045, 44835199200, 44608925548 ],"samples_ts": [ 11.4488, 11.4196, 11.4775 ]}
+{"event": "attempt_success", "ts": 1780799115.587518, "attempt": 0, "duration_s": 224}
+{"event": "vram_post_run", "ts": 1780799115.6047552, "vram_free_mib": 7040, "vram_used_mib": 1015, "vram_total_mib": 8188}
+{"event": "run_end", "ts": 1780799115.6048617, "success": true, "duration_s": 224, "peak_vram_mib": 7086}
+{"event": "run_perf_summary", "ts": 1780799115.604966, "peak_vram_mib": 7086, "results": [{"type": "prompt", "n_prompt": 512, "avg_ts": 704.107734, "stddev_ts": 58.086595, "ctk": "turbo3", "ctv": "turbo3"}, {"type": "prompt", "n_prompt": 2048, "avg_ts": 727.234199, "stddev_ts": 5.849412, "ctk": "turbo3", "ctv": "turbo3"}, {"type": "prompt", "n_prompt": 4096, "avg_ts": 710.770254, "stddev_ts": 9.986598, "ctk": "turbo3", "ctv": "turbo3"}, {"type": "prompt", "n_prompt": 8192, "avg_ts": 673.315526, "stddev_ts": 6.172042, "ctk": "turbo3", "ctv": "turbo3"}, {"type": "gen", "n_gen": 512, "avg_ts": 11.448646, "stddev_ts": 0.028963, "ctk": "turbo3", "ctv": "turbo3"}]}

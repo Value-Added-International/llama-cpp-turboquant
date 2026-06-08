@@ -1,0 +1,68 @@
+{
+  "version": 3,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 20,
+    "patch": 0
+  },
+  "include": ["../CMakePresets.json"],
+  "configurePresets": [
+    {
+      "name": "vai-llama-cuda",
+      "displayName": "VAI CUDA Package",
+      "description": "Configures llama-cpp-turboquant for self-contained CUDA .deb package build",
+      "hidden": true,
+      "generator": "Ninja Multi-Config",
+      "binaryDir": "${sourceDir}/build-cuda-package",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "CMAKE_INSTALL_PREFIX": "/opt/vai-llama",
+        "CMAKE_INSTALL_RPATH": "$ORIGIN/../lib:$ORIGIN",
+        "CMAKE_BUILD_WITH_INSTALL_RPATH": "ON",
+        "GGML_NATIVE": "OFF",
+        "GGML_CUDA": "ON",
+        "GGML_VULKAN": "OFF",
+        "GGML_HIP": "OFF",
+        "GGML_METAL": "OFF",
+        "GGML_BACKEND_DL": "ON",
+        "GGML_CPU_ALL_VARIANTS": "ON",
+        "LLAMA_BUILD_TESTS": "OFF",
+        "LLAMA_BUILD_EXAMPLES": "OFF",
+        "LLAMA_BUILD_TOOLS": "ON",
+        "LLAMA_BUILD_SERVER": "ON",
+        "LLAMA_OPENSSL": "ON"
+      }
+    },
+    {
+      "name": "vai-llama-cuda-build",
+      "displayName": "Build CUDA Package",
+      "description": "Builds the CUDA package binaries",
+      "inherits": ["vai-llama-cuda"],
+      "configurePresets": [
+        {
+          "generator": "Ninja Multi-Config",
+          "binaryDir": "${sourceDir}/build-cuda-package"
+        }
+      ],
+      "vendor": {
+        "Microsoft": {
+          "CMakeToolchains": {
+            "build": true,
+            "architecture": [
+              "x64",
+              "ARM64"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "vai-llama-cuda-install",
+      "displayName": "Install CUDA Package",
+      "description": "Installs the built CUDA package to staging directory",
+      "cacheVariables": {
+        "CMAKE_INSTALL_PREFIX": "/opt/vai-llama"
+      }
+    }
+  ]
+}

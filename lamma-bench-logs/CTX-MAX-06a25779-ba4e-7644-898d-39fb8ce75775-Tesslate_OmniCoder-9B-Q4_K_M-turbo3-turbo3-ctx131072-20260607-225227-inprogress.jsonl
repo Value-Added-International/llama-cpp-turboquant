@@ -1,0 +1,22 @@
+{"event": "run_start", "backend": "cuda", "log_tag": "CTX-MAX", "ts": 1780840347.7212365, "model": "Tesslate_OmniCoder-9B-Q4_K_M", "ctk": "turbo3", "ctv": "turbo3", "n_ctx": 131072, "n_prompt": 131008, "n_gen": 64, "run_uuid": "06a25779-ba4e-7644-898d-39fb8ce75775", "vram_free_mib": 7212}
+{"event": "cmd", "backend": "cuda", "log_tag": "CTX-MAX", "ts": 1780840347.7287276, "cmd": "/home/none/git/llama-cpp-turboquant/build-x64-linux-cuda-nvidia-RTX4060-release/bin/llama-completion -m /mnt/512_ssd_internal/vai-llm-tei/llm-models/bartowski/Tesslate_OmniCoder-9B-Q4_K_M.gguf -ngl 32 -sm layer -fa on -nkvo -ctk turbo3 -ctv turbo3 -c 131072 -f /tmp/ctx_max_prompt_70u1ok0i.txt -n 64 -b 2048 -ub 512 --perf"}
+{"event": "vram_sample", "backend": "cuda", "log_tag": "CTX-MAX", "ts": 1780840347.7465384, "vram_used_mib": 843, "vram_free_mib": 7212, "vram_total_mib": 8188}
+{"event": "vram_sample", "backend": "cuda", "log_tag": "CTX-MAX", "ts": 1780840352.7712948, "vram_used_mib": 941, "vram_free_mib": 7113, "vram_total_mib": 8188}
+{"event": "vram_sample", "backend": "cuda", "log_tag": "CTX-MAX", "ts": 1780840357.7994828, "vram_used_mib": 5886, "vram_free_mib": 2168, "vram_total_mib": 8188}
+{"event": "vram_sample", "backend": "cuda", "log_tag": "CTX-MAX", "ts": 1780840362.8188224, "vram_used_mib": 6543, "vram_free_mib": 1511, "vram_total_mib": 8188}
+{"event": "vram_sample", "backend": "cuda", "log_tag": "CTX-MAX", "ts": 1780840367.8387063, "vram_used_mib": 6563, "vram_free_mib": 1491, "vram_total_mib": 8188}
+{"event": "vram_sample", "backend": "cuda", "log_tag": "CTX-MAX", "ts": 1780840372.8562372, "vram_used_mib": 6587, "vram_free_mib": 1467, "vram_total_mib": 8188}
+{"event": "vram_sample", "backend": "cuda", "log_tag": "CTX-MAX", "ts": 1780840377.8738434, "vram_used_mib": 6606, "vram_free_mib": 1448, "vram_total_mib": 8188}
+{"event": "vram_sample", "backend": "cuda", "log_tag": "CTX-MAX", "ts": 1780840382.893088, "vram_used_mib": 6630, "vram_free_mib": 1424, "vram_total_mib": 8188}
+{"event": "vram_sample", "backend": "cuda", "log_tag": "CTX-MAX", "ts": 1780840387.910798, "vram_used_mib": 6648, "vram_free_mib": 1407, "vram_total_mib": 8188}
+{"event": "vram_sample", "backend": "cuda", "log_tag": "CTX-MAX", "ts": 1780840392.9342127, "vram_used_mib": 6666, "vram_free_mib": 1389, "vram_total_mib": 8188}
+{"event": "vram_sample", "backend": "cuda", "log_tag": "CTX-MAX", "ts": 1780840397.9538622, "vram_used_mib": 6685, "vram_free_mib": 1370, "vram_total_mib": 8188}
+{"event": "vram_sample", "backend": "cuda", "log_tag": "CTX-MAX", "ts": 1780840402.9740794, "vram_used_mib": 6702, "vram_free_mib": 1353, "vram_total_mib": 8188}
+{"event": "vram_sample", "backend": "cuda", "log_tag": "CTX-MAX", "ts": 1780840407.9933827, "vram_used_mib": 6717, "vram_free_mib": 1337, "vram_total_mib": 8188}
+{"event": "vram_sample", "backend": "cuda", "log_tag": "CTX-MAX", "ts": 1780840413.0132053, "vram_used_mib": 6733, "vram_free_mib": 1321, "vram_total_mib": 8188}
+{"event": "vram_sample", "backend": "cuda", "log_tag": "CTX-MAX", "ts": 1780840418.0340192, "vram_used_mib": 6747, "vram_free_mib": 1307, "vram_total_mib": 8188}
+{"event": "vram_sample", "backend": "cuda", "log_tag": "CTX-MAX", "ts": 1780840423.0508175, "vram_used_mib": 6763, "vram_free_mib": 1291, "vram_total_mib": 8188}
+{"event": "vram_sample", "backend": "cuda", "log_tag": "CTX-MAX", "ts": 1780840428.0722463, "vram_used_mib": 6791, "vram_free_mib": 1263, "vram_total_mib": 8188}
+{"event": "vram_sample", "backend": "cuda", "log_tag": "CTX-MAX", "ts": 1780840433.0886083, "vram_used_mib": 6793, "vram_free_mib": 1261, "vram_total_mib": 8188}
+{"event": "vram_sample", "backend": "cuda", "log_tag": "CTX-MAX", "ts": 1780840438.1078742, "vram_used_mib": 6825, "vram_free_mib": 1229, "vram_total_mib": 8188}
+{"event": "vram_sample", "backend": "cuda", "log_tag": "CTX-MAX", "ts": 1780840443.1266193, "vram_used_mib": 6821, "vram_free_mib": 1233, "vram_total_mib": 8188}
