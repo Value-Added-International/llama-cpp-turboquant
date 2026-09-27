@@ -165,3 +165,17 @@ CLAUDE.md
 # deb packaging artifacts
 llama-cpp-turboquant-hip-gfx1103_*/
 *.deb
+
+# MemPalace protocol files (managed by onboarding; mining skips these)
+/mempalace.yaml
+/entities.json
+
+# Staging build/packaging artifacts (bulk, not project source or docs)
+/staging-cpu/
+/staging-cuda/
+/staging-rocm/
+/staging-vulkan/
+
+# MemPalace per-project files (issue #185)
+mempalace.yaml
+entities.json
