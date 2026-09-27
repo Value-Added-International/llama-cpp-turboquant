@@ -1,7 +1,7 @@
 # VAI llama-bench Test Series — Implementation Plan
 
 **Date:** 2026-06-07
-**Branch:** ROCM_7.13_AOCC
+**Branch:** rocm10_aocc
 **Author:** none (plan recorded by Claude Code, implementation by human-directed AI assistance)
 
 ---
