@@ -49,10 +49,17 @@ check_cmd  ninja                    "ninja"
 check_cmd  glslc                    "glslc (Vulkan shader compiler)"
 
 # Confirm AOCC is leading (not system clang)
-CLANG_VER=$(clang --version 2>/dev/null | head -1)
+# NB: capture full output via command substitution (always reads to EOF) before
+# taking the first line in pure bash — piping a live process straight into
+# `head -1` can SIGPIPE it if head closes the pipe before the process finishes
+# its buffered multi-line write, which is exactly what AOCC's 4-line
+# `clang --version` output triggers intermittently under `set -o pipefail`.
+CLANG_VER_FULL=$(clang --version 2>/dev/null || true)
+CLANG_VER=${CLANG_VER_FULL%%$'\n'*}
 [[ "$CLANG_VER" == *"AOCC"* ]] || fail "clang on PATH is not AOCC ('$CLANG_VER') — check AOCC_PATH"
 
-GLSLC_VER=$(glslc --version 2>/dev/null | head -1)
+GLSLC_VER_FULL=$(glslc --version 2>/dev/null || true)
+GLSLC_VER=${GLSLC_VER_FULL%%$'\n'*}
 
 printf '  AOCC_PATH  = %s\n'  "$AOCC_PATH"
 printf '  CPU clang  = %s\n'  "$CLANG_VER"

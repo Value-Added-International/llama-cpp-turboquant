@@ -1,187 +1,168 @@
 #!/usr/bin/env bash
 #
-# Build the CUDA-only self-contained .deb package for llama-cpp-turboquant
-# 
-# This script builds a complete, self-contained Debian package with all runtime
-# dependencies bundled. The resulting package installs to /opt/vai-llama and
-# requires no additional GPU library packages beyond the host's CUDA driver.
+# Build the self-contained vai-llama.cpp-NVIDIA .deb package.
+#
+# Reuses the already-verified x64-linux-cuda-nvidia-RTX4060-release preset
+# (AOCC 5.2.0 as both the plain C/C++ compiler and nvcc's host compiler,
+# CUDA 13.3 nvcc for device code, sm_89;86) rather than a separate hand-rolled
+# cmake flag set, so the packaged binaries are built exactly the same way as
+# the validated dev build.
 #
 # Usage:
-#   ./build-cuda-package.sh [--version VERSION]
+#   ./.devops/build-cuda-package.sh
 #
+# Must be run from the repository root (same convention as the other
+# va-make-*.sh build drivers).
 
 set -euo pipefail
 
-# Default values
-VERSION="${1:-}"
-INSTALL_PREFIX="/opt/vai-llama/cuda"
-PACKAGE_NAME="vai-llama-cuda"
-BUILD_DIR="build-cuda-package"
+# A stale LD_LIBRARY_PATH inherited from the invoking shell (e.g. leftover
+# ROCm dev-environment exports) takes priority over RUNPATH in glibc's
+# search order and can silently corrupt library resolution / verification
+# below. Build and verify against a clean environment.
+unset LD_LIBRARY_PATH
+
+REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$REPO_ROOT"
+
+PRESET="x64-linux-cuda-nvidia-RTX4060-release"
+BUILD_DIR="build-${PRESET}"
 STAGING_DIR="staging-cuda"
+INSTALL_PREFIX="/opt/vai-llama/nvidia"
+PACKAGE_NAME="vai-llama.cpp-NVIDIA"
+VERSION="0.0.$(git rev-list --count HEAD)"
+CUDA_PATH="${CUDA_PATH:-/usr/local/cuda-13.3}"
+AOCC_PATH="${AOCC_PATH:-/opt/AMD/aocc-compiler-5.2.0}"
 
-# Parse version argument
-if [ "${VERSION:-}" = "--version" ]; then
-  VERSION="0.0.$(git rev-list --count HEAD)"
-elif [ -n "$VERSION" ]; then
-  : # Use provided version
-else
-  VERSION="0.0.$(git rev-list --count HEAD)"
-fi
+fail() { printf '\nERROR: %s\n' "$*" >&2; exit 1; }
 
-echo "=== VAI-LLAMA CUDA Package Builder ==="
+[[ -d "$BUILD_DIR" ]] || fail "'$BUILD_DIR' does not exist — run ./va-make-CUDA-nvidia.sh make first"
+
+echo "=== $PACKAGE_NAME package builder ==="
 echo "Version: $VERSION"
 echo "Install prefix: $INSTALL_PREFIX"
 echo ""
 
-# Create build directory
-rm -rf "$BUILD_DIR" "$STAGING_DIR"
-mkdir -p "$BUILD_DIR" "$STAGING_DIR$INSTALL_PREFIX"
+# Step 1: install the already-built binaries into the staging tree
+echo "[1/4] Installing $PRESET build into staging..."
+rm -rf "$STAGING_DIR"
+cmake --install "$BUILD_DIR" --prefix "$STAGING_DIR$INSTALL_PREFIX"
 
-# Step 1: Configure the build
-echo "[1/6] Configuring CMake build..."
-cmake -B "$BUILD_DIR" \
-  -DCMAKE_BUILD_TYPE=Release \
-  -DCMAKE_INSTALL_PREFIX="$INSTALL_PREFIX" \
-  -DCMAKE_INSTALL_RPATH="\$ORIGIN/../lib;\$ORIGIN" \
-  -DCMAKE_BUILD_WITH_INSTALL_RPATH=ON \
-  -DGGML_NATIVE=OFF \
-  -DGGML_VULKAN=OFF \
-  -DGGML_CUDA=ON \
-  -DGGML_HIP=OFF \
-  -DGGML_METAL=OFF \
-  -DGGML_BACKEND_DL=ON \
-  -DGGML_CPU_ALL_VARIANTS=ON \
-  -DLLAMA_BUILD_TESTS=OFF \
-  -DLLAMA_BUILD_EXAMPLES=OFF \
-  -DLLAMA_BUILD_TOOLS=ON \
-  -DLLAMA_BUILD_SERVER=ON \
-  -DLLAMA_OPENSSL=ON \
-  -DCMAKE_EXE_LINKER_FLAGS='-Wl,--allow-shlib-undefined' \
-  -DCMAKE_TOOLCHAIN_FILE="${sourceDir}/cmake/x64-linux-cuda-nvidia-rtx4060.cmake" \
-  -DLLAMA_BIN_NAME_SUFFIX="cuda"
+# Step 2: bundle CUDA + system runtime libraries into lib/ (see the Vulkan
+# script for why libs land in lib/, not alongside binaries in bin/).
+# libcuda.so (the NVIDIA driver interface) is deliberately NOT bundled --
+# it's version-locked to the host's installed NVIDIA driver and must come
+# from the host, not the package.
+echo "[2/4] Bundling CUDA + system runtime libraries..."
+LIB_DIR="$STAGING_DIR$INSTALL_PREFIX/lib"
+mkdir -p "$LIB_DIR"
 
-# Step 2: Build the project
-echo "[2/6] Building llama-cpp with CUDA backend..."
-cmake --build "$BUILD_DIR" --config Release -j$(nproc)
-
-# Step 3: Install to staging area
-echo "[3/6] Installing to staging directory..."
-cmake --install "$BUILD_DIR" --config Release --prefix "$STAGING_DIR$INSTALL_PREFIX"
-
-# Step 4: Bundle CUDA runtime libraries
-echo "[4/6] Bundling CUDA runtime libraries..."
-
-CUDA_LIBS=(
-  "libcudart.so*"
-  "libnvrtc.so*"
-  "libcurand.so*"
-  "libcublas.so*"
-  "libcublasLt.so*"
-  "libcusparse.so*"
-  "libcusolver.so*"
-  "libnvjpeg.so*"
-  "libnvinfer.so*"
-  "libnvparsers.so*"
-  "libnvonnxruntime.so*"
-)
-
-for lib in "${CUDA_LIBS[@]}"; do
-  # Search for the library in installed location first, then system paths
-  found=""
-  
-  # Check if already installed (should be from cmake install)
-  installed=$(find "$STAGING_DIR$INSTALL_PREFIX/lib" -name "$lib" -type f 2>/dev/null | head -1)
-  if [ -n "$installed" ]; then
-    echo "  Found $lib at: $installed"
-    continue
-  fi
-  
-  # Search system paths for CUDA libraries
-  for path in /usr/local/cuda/lib64 /usr/lib/x86_64-linux-gnu /usr/lib64; do
-    if [ -d "$path" ]; then
-      libpath=$(find "$path" -name "${lib}" -type f 2>/dev/null | head -1)
-      if [ -n "$libpath" ]; then
-        echo "  Found $lib at: $libpath"
-        cp -P "$libpath" "$STAGING_DIR$INSTALL_PREFIX/lib/"
-        found=1
-        break
-      fi
+bundle_lib() {
+    local pattern="$1"
+    local found
+    found=$(find "$LIB_DIR" -maxdepth 1 -name "$pattern" -type f 2>/dev/null | head -1)
+    if [[ -n "$found" ]]; then
+        return 0
     fi
-  done
-done
-
-# Step 5: Bundle required system libraries
-echo "[5/6] Bundling required system libraries..."
-
-SYSTEM_LIBS=(
-  "libgomp.so.1"
-  "libstdc++.so.*"
-  "libgcc_s.so.*"
-  "libssl.so*"
-  "libcrypto.so*"
-  "libcurl.so*"
-)
-
-for lib in "${SYSTEM_LIBS[@]}"; do
-  found=$(find "$STAGING_DIR$INSTALL_PREFIX/lib" -name "${lib}" -type f 2>/dev/null | head -1)
-  
-  if [ -z "$found" ]; then
-    # Search system paths
-    for path in /usr/lib/x86_64-linux-gnu /usr/lib64; do
-      libpath=$(find "$path" -name "${lib}" -type f 2>/dev/null | head -1)
-      if [ -n "$libpath" ]; then
-        echo "  Bundling $lib from: $libpath"
-        cp -P "$libpath" "$STAGING_DIR$INSTALL_PREFIX/lib/"
-        break
-      fi
+    for path in "$CUDA_PATH/lib64" "$AOCC_PATH/lib" /usr/lib/x86_64-linux-gnu /usr/lib64 /usr/lib; do
+        [[ -d "$path" ]] || continue
+        # Match both the real file AND its SONAME symlink (e.g.
+        # libstdc++.so.6 -> libstdc++.so.6.0.35) -- the loader resolves by
+        # exact SONAME, and `-type f` alone silently skips the symlink,
+        # leaving the binary unable to find the bundled copy at runtime.
+        local matches
+        matches=$(find -L "$path" -maxdepth 1 -name "$pattern" \( -type f -o -type l \) 2>/dev/null)
+        if [[ -n "$matches" ]]; then
+            echo "  bundling $pattern from $path"
+            while IFS= read -r m; do
+                cp -P "$m" "$LIB_DIR/"
+                # Raw system/CUDA libraries carry no $ORIGIN-relative RPATH
+                # of their own, so their own dependencies (e.g. libcurl ->
+                # libz) still resolve from the system instead of our bundled
+                # copies. Force $ORIGIN so cross-references stay bundled.
+                if [[ -f "$m" && ! -L "$m" ]]; then
+                    patchelf --set-rpath '$ORIGIN' "$LIB_DIR/$(basename "$m")" 2>/dev/null || true
+                fi
+            done <<< "$matches"
+            return 0
+        fi
     done
-  else
-    echo "  Library already present: $found"
-  fi
+    fail "$pattern not found anywhere searched -- package would be non-self-contained"
+}
+for lib in "libcudart.so*" "libcublas.so*" "libcublasLt.so*" "libnvrtc.so*" "libnvrtc-builtins.so*"; do
+    bundle_lib "$lib"
+done
+# libomp.so (AOCC's LLVM OpenMP runtime, needed by libggml-cpu -- not
+# libgomp, GNU's runtime, which this AOCC-compiled project does not use)
+for lib in "libomp.so*" "libstdc++.so.*" "libgcc_s.so.*" "libssl.so*" "libcrypto.so*" "libcurl.so*" "libz.so*" "libzstd.so*"; do
+    bundle_lib "$lib"
 done
 
-# Step 6: Create the .deb package
-echo "[6/6] Creating Debian package..."
-
-cd "$STAGING_DIR"
-
-# Generate changelog entry
-cat > "changelog" << EOF
-vai-llama-cuda ($VERSION) unstable; urgency=medium
-
-  * Initial self-contained CUDA package release.
-  * Bundles all CUDA runtime libraries for zero-runtime-dependency installation.
-  * Includes: llama-cli, llama-server, llama-bench, and all tools.
-
- -- VAI Team <team@vai.example.com>  $(date +%Y-%m-%d)
-
+# Step 3: write the DEBIAN control metadata and build the package
+echo "[3/4] Writing package metadata..."
+mkdir -p "$STAGING_DIR/DEBIAN"
+cat > "$STAGING_DIR/DEBIAN/control" << EOF
+Package: $PACKAGE_NAME
+Version: $VERSION
+Architecture: amd64
+Maintainer: Value-Added International <value.added.kr@gmail.com>
+Section: science
+Priority: optional
+Description: llama.cpp + TurboQuant CUDA backend (RTX 4060 / AOCC Zen4)
+ Self-contained CUDA-accelerated build of llama-cpp-turboquant, compiled with
+ AMD AOCC 5.2.0 as both the CPU compiler and nvcc's host compiler, targeting
+ NVIDIA Ada Lovelace (sm_89) and Ampere (sm_86). Includes MXFP4/NVFP4 quant
+ type support (NVFP4 runs via the CUDA fallback path on non-Blackwell GPUs).
+ Bundles the CUDA runtime and required system libraries.
+ .
+ Requirements (host system): an NVIDIA GPU with a driver providing libcuda.so
+ compatible with the bundled CUDA 13.3 runtime. libcuda.so itself is NOT
+ bundled -- it is version-locked to the host driver by design.
+ .
+ Installation location: $INSTALL_PREFIX
 EOF
+cat > "$STAGING_DIR/DEBIAN/postinst" << 'EOF'
+#!/bin/sh
+exit 0
+EOF
+chmod 755 "$STAGING_DIR/DEBIAN/postinst"
 
-# Create the package
-dpkg-deb \
-  --root-owner-group \
-  --set-sequence 100 \
-  -b "vai-llama-cuda_${VERSION}_amd64" \
-  "vai-llama-cuda_${VERSION}_amd64.deb"
+DEB_FILE="${PACKAGE_NAME}_${VERSION}_amd64.deb"
+dpkg-deb --build --root-owner-group "$STAGING_DIR" "$DEB_FILE"
 
-cd ..
+# Step 4: verify
+# A plain "not found" grep only catches libraries that fail to resolve
+# anywhere -- it would NOT have caught libomp.so silently resolving via this
+# dev machine's system-wide AOCC ldconfig registration instead of the
+# bundled copy (a real bug found while building the Vulkan package). Check
+# that every non-glibc, non-driver dependency resolves from OUR lib/.
+echo "[4/4] Verifying package..."
+dpkg-deb -I "$DEB_FILE" > /dev/null && echo "  package structure OK"
 
-# Verify the package
+# libcuda.so / libnvidia-ml.so are the NVIDIA driver interface -- version-
+# locked to the host driver by design, deliberately not bundled.
+LIB_DIR_REAL=$(realpath -m "$LIB_DIR")
+ALLOWED_HOST_LIBS='^(linux-vdso\.so|ld-linux-x86-64\.so|libc\.so|libm\.so|libpthread\.so|libdl\.so|librt\.so|libcuda\.so|libnvidia-ml\.so)'
+NOT_SELF_CONTAINED=0
+while IFS= read -r line; do
+    [[ "$line" == *"=>"* ]] || continue
+    libname=$(awk '{print $1}' <<< "$line")
+    libpath=$(awk '{print $3}' <<< "$line")
+    [[ "$libname" =~ $ALLOWED_HOST_LIBS ]] && continue
+    if [[ -z "$libpath" || "$libpath" == "not" ]]; then
+        echo "  MISSING: $libname"
+        NOT_SELF_CONTAINED=1
+        continue
+    fi
+    resolved=$(realpath -m "$libpath")
+    if [[ "$resolved" != "$LIB_DIR_REAL"/* ]]; then
+        echo "  NOT BUNDLED: $libname resolved from $libpath (expected under $LIB_DIR)"
+        NOT_SELF_CONTAINED=1
+    fi
+done < <(ldd "$STAGING_DIR$INSTALL_PREFIX/bin/llama-cli" 2>&1)
+[[ $NOT_SELF_CONTAINED -eq 0 ]] && echo "  all libraries resolve from the bundled lib/ (or are glibc/NVIDIA-driver primitives)" || fail "package is not self-contained -- see above"
+
 echo ""
-echo "=== Package Verification ==="
-dpkg-deb -I vai-llama-cuda_${VERSION}_amd64.deb > /dev/null && echo "✓ Package structure is valid" || echo "✗ Package verification failed"
-
-ldd "$STAGING_DIR$INSTALL_PREFIX/bin/llama.cuda" 2>/dev/null | grep -E "(not found|=>)" || echo "✓ No missing shared libraries detected (except expected host libs)"
-
-echo ""
-echo "=== Build Complete ==="
-echo "Package: vai-llama-cuda_${VERSION}_amd64.deb"
-echo "Location: $(pwd)/vai-llama-cuda_${VERSION}_amd64.deb"
-echo "Size: $(du -h vai-llama-cuda_${VERSION}_amd64.deb | cut -f1)"
-echo ""
-echo "To install:"
-echo "  sudo dpkg -i vai-llama-cuda_${VERSION}_amd64.deb"
-echo "  sudo apt-get install -f  # Fix any dependency issues"
-echo ""
-echo "Installation path: $INSTALL_PREFIX"
-echo "Binary: $INSTALL_PREFIX/bin/llama.cuda"
+echo "=== Build complete: $DEB_FILE ($(du -h "$DEB_FILE" | cut -f1)) ==="
+echo "Install: sudo dpkg -i $DEB_FILE"
+echo "Binary after install: $INSTALL_PREFIX/bin/llama-cli"

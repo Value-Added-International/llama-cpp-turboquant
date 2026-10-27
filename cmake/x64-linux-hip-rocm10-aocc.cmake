@@ -1,7 +1,12 @@
-# AMD ROCM 7.13 + AOCC 5.2.0 toolchain — HIP GPU (gfx1103 RDNA3) + Zen4 CPU
+# AMD ROCM 10.0 + AOCC 5.2.0 toolchain — HIP GPU (gfx1103 RDNA3) + Zen4 CPU
 #
 # CPU side (tokenizer, sampler, post-processing): AMD AOCC 5.2.0
 # GPU side (HIP kernels): ROCM bundled amdclang — NOT system clang
+#
+# ROCM_PATH defaults to /opt/rocm, which rides the rocm-core alternatives
+# symlink rather than a hardcoded version path, so this file survives future
+# ROCm point releases without edits (only the preset/script *names* encode
+# the major version, for operator clarity).
 #
 # Override paths via env vars:
 #   ROCM_PATH   (default: /opt/rocm)
@@ -19,6 +24,9 @@ else()
     set(_aocc "/opt/AMD/aocc-compiler-5.2.0")
 endif()
 
+# rocWMMA is header-only C++ templates -- verified to compile clean against
+# the ROCm 10.0 HIP compiler for gfx1103 despite the directory's 7.13 name
+# (no ABI dependency on the ROCm runtime version).
 if(DEFINED ENV{ROCWMMA_PATH})
     set(_rocwmma "$ENV{ROCWMMA_PATH}")
 else()

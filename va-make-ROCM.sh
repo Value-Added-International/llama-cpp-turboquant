@@ -8,14 +8,17 @@
 #   ./va-make.sh release      — alias for full clean build
 #
 # Target: AMD Radeon 780M (gfx1103 RDNA3)
-# GPU kernels: ROCm 7.13 amdclang  (HIP / rocWMMA FA)
+# GPU kernels: ROCm 10.0 amdclang  (HIP / rocWMMA FA)
 # CPU code:    AMD AOCC 5.2.0      (Zen4 AVX512/VNNI-optimised tokeniser, sampler)
 
 set -euo pipefail
 
 # ── paths ────────────────────────────────────────────────────────────────────
 
-ROCM_PATH="${ROCM_PATH:-/opt/rocm/core-7.13}"
+# ROCM_PATH defaults to /opt/rocm (rides the rocm-core alternatives symlink,
+# currently -> core-10.0) instead of a hardcoded version path, so this script
+# survives future ROCm point releases without edits.
+ROCM_PATH="${ROCM_PATH:-/opt/rocm}"
 AOCC_PATH="${AOCC_PATH:-/opt/AMD/aocc-compiler-5.2.0}"
 ROCWMMA_PATH="${ROCWMMA_PATH:-/opt/rocwmma-rocm7.13}"
 
@@ -30,8 +33,8 @@ export PATH="$AOCC_PATH/bin:$PATH"
 
 # ── constants ────────────────────────────────────────────────────────────────
 
-PRESET="x64-linux-hip-rocm713-gfx1103-release"
-BUILD_DIR="build-x64-linux-hip-rocm713-gfx1103-release"
+PRESET="x64-linux-hip-rocm10-gfx1103-release"
+BUILD_DIR="build-x64-linux-hip-rocm10-gfx1103-release"
 NPROC=$(nproc)
 
 # ── preflight checks ─────────────────────────────────────────────────────────
@@ -57,7 +60,12 @@ check_cmd  cmake                                      "cmake"
 check_cmd  ninja                                      "ninja"
 
 # Confirm AOCC is leading (not system clang)
-CLANG_VER=$(clang --version 2>/dev/null | head -1)
+# NB: capture via command substitution (reads to EOF) then slice the first
+# line in pure bash -- piping straight into `head -1` can SIGPIPE the live
+# process if head closes early, which AOCC's multi-line `clang --version`
+# output triggers intermittently under `set -o pipefail`.
+CLANG_VER_FULL=$(clang --version 2>/dev/null || true)
+CLANG_VER=${CLANG_VER_FULL%%$'\n'*}
 [[ "$CLANG_VER" == *"AOCC"* ]] || fail "clang on PATH is not AOCC ('$CLANG_VER') — check AOCC_PATH"
 
 printf '  ROCM_PATH    = %s\n'  "$ROCM_PATH"

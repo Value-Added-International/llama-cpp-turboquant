@@ -8,7 +8,7 @@
         "binaryDir":   "${sourceDir}/build-${presetName}",
         "cacheVariables": {
             "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
-            "CMAKE_INSTALL_RPATH": "$ORIGIN;$ORIGIN/.."
+            "CMAKE_INSTALL_RPATH": "$ORIGIN/../lib;$ORIGIN"
         }
     },
     {
@@ -68,10 +68,10 @@
     { "name": "x64-linux-gcc+static-release", "inherits": [ "base", "x64-linux-gcc", "release", "static" ] },
 
     {
-        "name": "hip-rocm713-gfx1103",
+        "name": "hip-rocm10-gfx1103",
         "hidden": true,
         "cacheVariables": {
-            "CMAKE_TOOLCHAIN_FILE":    "${sourceDir}/cmake/x64-linux-hip-rocm713-aocc.cmake",
+            "CMAKE_TOOLCHAIN_FILE":    "${sourceDir}/cmake/x64-linux-hip-rocm10-aocc.cmake",
             "GGML_HIP":                "ON",
             "GPU_TARGETS":             "gfx1103",
             "GGML_HIP_ROCWMMA_FATTN":  "ON",
@@ -90,8 +90,8 @@
             "GGML_NATIVE":          "ON"
         }
     },
-    { "name": "x64-linux-hip-rocm713-gfx1103-release", "inherits": [ "base", "hip-rocm713-gfx1103", "release" ] },
-    { "name": "x64-linux-hip-rocm713-gfx1103-debug",   "inherits": [ "base", "hip-rocm713-gfx1103", "debug"   ] },
+    { "name": "x64-linux-hip-rocm10-gfx1103-release", "inherits": [ "base", "hip-rocm10-gfx1103", "release" ] },
+    { "name": "x64-linux-hip-rocm10-gfx1103-debug",   "inherits": [ "base", "hip-rocm10-gfx1103", "debug"   ] },
     { "name": "x64-linux-vulkan-aocc-release",          "inherits": [ "base", "vulkan-aocc",          "release" ] },
     { "name": "x64-linux-vulkan-aocc-debug",            "inherits": [ "base", "vulkan-aocc",          "debug"   ] },
 
@@ -109,6 +109,21 @@
     },
     { "name": "x64-linux-vulkan-AMD-780-release", "inherits": [ "base", "vulkan-amd780", "release" ] },
     { "name": "x64-linux-vulkan-AMD-780-debug",   "inherits": [ "base", "vulkan-amd780", "debug"   ] },
+
+    {
+        "name": "cpu-aocc",
+        "hidden": true,
+        "cacheVariables": {
+            "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/cmake/x64-linux-vulkan-aocc.cmake",
+            "GGML_VULKAN":          "OFF",
+            "GGML_HIP":             "OFF",
+            "GGML_CUDA":            "OFF",
+            "GGML_METAL":           "OFF",
+            "GGML_NATIVE":          "ON"
+        }
+    },
+    { "name": "x64-linux-cpu-aocc-release", "inherits": [ "base", "cpu-aocc", "release" ] },
+    { "name": "x64-linux-cpu-aocc-debug",   "inherits": [ "base", "cpu-aocc", "debug"   ] },
 
     {
         "name": "cuda-nvidia-rtx4060",
