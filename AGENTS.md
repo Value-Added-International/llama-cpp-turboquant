@@ -14,11 +14,11 @@ cmake -B build && cmake --build build -j$(nproc)
 
 **Using CMake presets (recommended for GPU backends):**
 ```bash
-cmake --preset x64-linux-hip-rocm713-gfx1103-release && cmake --build build-x64-linux-hip-rocm713-gfx1103-release -j$(nproc)
+cmake --preset x64-linux-hip-rocm10-gfx1103-release && cmake --build build-x64-linux-hip-rocm10-gfx1103-release -j$(nproc)
 cmake --preset x64-linux-vulkan-aocc-release && cmake --build build-x64-linux-vulkan-aocc-release -j$(nproc)
 ```
 
-**Makefile shortcuts:** `make hip-rocm713-gfx1103`, `make vulkan-aocc`, `make deb`
+**Makefile shortcuts:** `make hip-rocm10-gfx1103`, `make vulkan-aocc`, `make deb`
 
 **Build specific target:** `cmake --build build --target server`
 
